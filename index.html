@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Finance Dashboard - India</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Header -->
+        <div class="header">
+            <h1>
+                <i class="fas fa-chart-line"></i>
+                Personal Finance Dashboard
+            </h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="exportReport()">
+                    <i class="fas fa-download"></i>
+                    Export Report
+                </button>
+                <button class="btn btn-primary" onclick="addTransaction()">
+                    <i class="fas fa-plus"></i>
+                    Add Transaction
+                </button>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-title">Total Balance</div>
+                    </div>
+                    <div class="kpi-icon icon-balance">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" id="totalBalance">₹3,45,000</div>
+                <div class="kpi-subtitle">
+                    <span class="trend-up"><i class="fas fa-arrow-up"></i> 12.5%</span>
+                    <span>from last month</span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-title">Monthly Income</div>
+                    </div>
+                    <div class="kpi-icon icon-income">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" id="monthlyIncome">₹85,000</div>
+                <div class="kpi-subtitle">
+                    <span class="trend-up"><i class="fas fa-arrow-up"></i> 5.2%</span>
+                    <span>from last month</span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-title">Monthly Expenses</div>
+                    </div>
+                    <div class="kpi-icon icon-expense">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" id="monthlyExpenses">₹52,500</div>
+                <div class="kpi-subtitle">
+                    <span class="trend-down"><i class="fas fa-arrow-down"></i> 3.1%</span>
+                    <span>from last month</span>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-header">
+                    <div>
+                        <div class="kpi-title">Monthly Savings</div>
+                    </div>
+                    <div class="kpi-icon icon-savings">
+                        <i class="fas fa-piggy-bank"></i>
+                    </div>
+                </div>
+                <div class="kpi-value" id="monthlySavings">₹32,500</div>
+                <div class="kpi-subtitle">
+                    <span>Savings Rate: <strong>38.2%</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="chart-grid">
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">Income vs Expenses</h3>
+                    <div class="time-filter">
+                        <button class="active" onclick="filterChart('weekly')">Weekly</button>
+                        <button onclick="filterChart('monthly')">Monthly</button>
+                        <button onclick="filterChart('yearly')">Yearly</button>
+                    </div>
+                </div>
+                <canvas id="incomeExpenseChart"></canvas>
+            </div>
+
+            <div class="chart-container">
+                <div class="chart-header">
+                    <h3 class="chart-title">Expense Breakdown</h3>
+                </div>
+                <canvas id="expenseBreakdownChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Insights -->
+        <div class="insights-container">
+            <div class="chart-header">
+                <h3 class="chart-title"><i class="fas fa-lightbulb"></i> Smart Insights</h3>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon" style="background: #fef3c7; color: #92400e;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="insight-content">
+                    <h4>Food Spending Alert</h4>
+                    <p>You spent 20% more on food this month (₹12,500 vs ₹10,400). Consider meal planning to save more.</p>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon" style="background: #d1fae5; color: #065f46;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="insight-content">
+                    <h4>Great Job on Transport!</h4>
+                    <p>Your transport expenses decreased by 15% this month. Keep up the good work!</p>
+                </div>
+            </div>
+            <div class="insight-item">
+                <div class="insight-icon" style="background: #dbeafe; color: #1e40af;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="insight-content">
+                    <h4>Forecast: Next Month</h4>
+                    <p>Based on trends, estimated expenses for next month: ₹54,200. Plan accordingly!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Savings Goals -->
+        <div class="goals-container">
+            <div class="chart-header">
+                <h3 class="chart-title"><i class="fas fa-bullseye"></i> Savings Goals</h3>
+            </div>
+            <div class="goal-item">
+                <div class="goal-header">
+                    <div class="goal-name">
+                        <i class="fas fa-umbrella" style="color: var(--primary-color);"></i>
+                        Emergency Fund
+                    </div>
+                    <div class="goal-amount">₹1,50,000 / ₹2,00,000</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 75%"></div>
+                </div>
+            </div>
+            <div class="goal-item">
+                <div class="goal-header">
+                    <div class="goal-name">
+                        <i class="fas fa-plane" style="color: var(--warning-color);"></i>
+                        Goa Trip
+                    </div>
+                    <div class="goal-amount">₹35,000 / ₹60,000</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 58.3%"></div>
+                </div>
+            </div>
+            <div class="goal-item">
+                <div class="goal-header">
+                    <div class="goal-name">
+                        <i class="fas fa-chart-pie" style="color: var(--success-color);"></i>
+                        Investment Portfolio
+                    </div>
+                    <div class="goal-amount">₹2,50,000 / ₹5,00,000</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 50%"></div>
+                </div>
+            </div>
+            <div class="goal-item">
+                <div class="goal-header">
+                    <div class="goal-name">
+                        <i class="fas fa-laptop" style="color: #6366f1;"></i>
+                        New Laptop
+                    </div>
+                    <div class="goal-amount">₹25,000 / ₹80,000</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 31.25%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget Tracking -->
+        <div class="chart-container" style="margin-bottom: 30px;">
+            <div class="chart-header">
+                <h3 class="chart-title"><i class="fas fa-calculator"></i> Budget Tracking</h3>
+            </div>
+            <div class="budget-grid">
+                <div class="budget-card">
+                    <div class="budget-header">
+                        <div class="budget-category">
+                            <div class="category-icon" style="background: #fee2e2; color: #991b1b;">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            Food
+                        </div>
+                        <div class="budget-status status-warning">85%</div>
+                    </div>
+                    <div class="budget-amounts">
+                        <span class="budget-spent">₹12,500</span>
+                        <span class="budget-total">/ ₹15,000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 83.3%; background: linear-gradient(90deg, #f59e0b, #fb923c);"></div>
+                    </div>
+                </div>
+
+                <div class="budget-card">
+                    <div class="budget-header">
+                        <div class="budget-category">
+                            <div class="category-icon" style="background: #dbeafe; color: #1e40af;">
+                                <i class="fas fa-home"></i>
+                            </div>
+                            Rent
+                        </div>
+                        <div class="budget-status status-good">100%</div>
+                    </div>
+                    <div class="budget-amounts">
+                        <span class="budget-spent">₹20,000</span>
+                        <span class="budget-total">/ ₹20,000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%;"></div>
+                    </div>
+                </div>
+
+                <div class="budget-card">
+                    <div class="budget-header">
+                        <div class="budget-category">
+                            <div class="category-icon" style="background: #fef3c7; color: #92400e;">
+                                <i class="fas fa-bus"></i>
+                            </div>
+                            Transport
+                        </div>
+                        <div class="budget-status status-good">56%</div>
+                    </div>
+                    <div class="budget-amounts">
+                        <span class="budget-spent">₹2,800</span>
+                        <span class="budget-total">/ ₹5,000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 56%;"></div>
+                    </div>
+                </div>
+
+                <div class="budget-card">
+                    <div class="budget-header">
+                        <div class="budget-category">
+                            <div class="category-icon" style="background: #e0e7ff; color: #4338ca;">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            Bills
+                        </div>
+                        <div class="budget-status status-good">73%</div>
+                    </div>
+                    <div class="budget-amounts">
+                        <span class="budget-spent">₹5,500</span>
+                        <span class="budget-total">/ ₹7,500</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 73.3%;"></div>
+                    </div>
+                </div>
+
+                <div class="budget-card">
+                    <div class="budget-header">
+                        <div class="budget-category">
+                            <div class="category-icon" style="background: #fce7f3; color: #9f1239;">
+                                <i class="fas fa-film"></i>
+                            </div>
+                            Entertainment
+                        </div>
+                        <div class="budget-status status-over">112%</div>
+                    </div>
+                    <div class="budget-amounts">
+                        <span class="budget-spent">₹5,600</span>
+                        <span class="budget-total">/ ₹5,000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 100%; background: linear-gradient(90deg, #ef4444, #f87171);"></div>
+                    </div>
+                </div>
+
+                <div class="budget-card">
+                    <div class="budget-header">
+                        <div class="budget-category">
+                            <div class="category-icon" style="background: #d1fae5; color: #065f46;">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            Healthcare
+                        </div>
+                        <div class="budget-status status-good">40%</div>
+                    </div>
+                    <div class="budget-amounts">
+                        <span class="budget-spent">₹2,000</span>
+                        <span class="budget-total">/ ₹5,000</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 40%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="table-container">
+            <div class="chart-header">
+                <h3 class="chart-title"><i class="fas fa-list"></i> Recent Transactions</h3>
+            </div>
+            <div class="table-controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search transactions..." onkeyup="searchTransactions()">
+                    <i class="fas fa-search"></i>
+                </div>
+                <select class="filter-select" id="categoryFilter" onchange="filterTransactions()">
+                    <option value="all">All Categories</option>
+                    <option value="Food">Food</option>
+                    <option value="Rent">Rent</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Bills">Bills</option>
+                    <option value="Entertainment">Entertainment</option>
+                    <option value="Healthcare">Healthcare</option>
+                    <option value="Salary">Salary</option>
+                    <option value="Freelance">Freelance</option>
+                </select>
+                <select class="filter-select" id="typeFilter" onchange="filterTransactions()">
+                    <option value="all">All Types</option>
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </select>
+            </div>
+            <table id="transactionsTable">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Category</th>
+                        <th>Type</th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionBody">
+                    <!-- Transactions will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

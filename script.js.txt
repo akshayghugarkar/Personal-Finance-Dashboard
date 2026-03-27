@@ -1,0 +1,232 @@
+// Indian Number Formatting Function
+function formatIndianCurrency(amount) {
+    const num = Math.abs(amount);
+    const formatted = num.toLocaleString('en-IN', {
+        maximumFractionDigits: 0,
+        style: 'currency',
+        currency: 'INR'
+    });
+    return formatted;
+}
+
+// Sample Transaction Data
+const transactions = [
+    { date: '2024-01-15', description: 'Monthly Salary', category: 'Salary', type: 'income', amount: 85000 },
+    { date: '2024-01-14', description: 'Grocery Shopping - DMart', category: 'Food', type: 'expense', amount: 3500 },
+    { date: '2024-01-13', description: 'Electricity Bill', category: 'Bills', type: 'expense', amount: 2200 },
+    { date: '2024-01-12', description: 'Uber Rides', category: 'Transport', type: 'expense', amount: 850 },
+    { date: '2024-01-11', description: 'Movie & Dinner', category: 'Entertainment', type: 'expense', amount: 1800 },
+    { date: '2024-01-10', description: 'Rent Payment', category: 'Rent', type: 'expense', amount: 20000 },
+    { date: '2024-01-09', description: 'Freelance Project', category: 'Freelance', type: 'income', amount: 15000 },
+    { date: '2024-01-08', description: 'Restaurant - Mainland China', category: 'Food', type: 'expense', amount: 2400 },
+    { date: '2024-01-07', description: 'Internet Bill', category: 'Bills', type: 'expense', amount: 1200 },
+    { date: '2024-01-06', description: 'Pharmacy', category: 'Healthcare', type: 'expense', amount: 850 },
+    { date: '2024-01-05', description: 'Metro Card Recharge', category: 'Transport', type: 'expense', amount: 500 },
+    { date: '2024-01-04', description: 'Swiggy Order', category: 'Food', type: 'expense', amount: 650 },
+    { date: '2024-01-03', description: 'Netflix Subscription', category: 'Entertainment', type: 'expense', amount: 649 },
+    { date: '2024-01-02', description: 'Vegetable Market', category: 'Food', type: 'expense', amount: 450 },
+    { date: '2024-01-01', description: 'Doctor Consultation', category: 'Healthcare', type: 'expense', amount: 800 }
+];
+
+// Populate Transactions Table
+function populateTransactions(data = transactions) {
+    const tbody = document.getElementById('transactionBody');
+    tbody.innerHTML = '';
+    
+    data.forEach(transaction => {
+        const row = tbody.insertRow();
+        row.innerHTML = `
+            <td>${new Date(transaction.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
+            <td>${transaction.description}</td>
+            <td>${transaction.category}</td>
+            <td><span class="transaction-type type-${transaction.type}">${transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</span></td>
+            <td class="amount-${transaction.type}">${transaction.type === 'income' ? '+' : '-'}${formatIndianCurrency(transaction.amount)}</td>
+        `;
+    });
+}
+
+// Search Transactions
+function searchTransactions() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const filtered = transactions.filter(t => 
+        t.description.toLowerCase().includes(searchTerm) ||
+        t.category.toLowerCase().includes(searchTerm)
+    );
+    populateTransactions(filtered);
+}
+
+// Filter Transactions
+function filterTransactions() {
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const typeFilter = document.getElementById('typeFilter').value;
+    
+    let filtered = transactions;
+    
+    if (categoryFilter !== 'all') {
+        filtered = filtered.filter(t => t.category === categoryFilter);
+    }
+    
+    if (typeFilter !== 'all') {
+        filtered = filtered.filter(t => t.type === typeFilter);
+    }
+    
+    populateTransactions(filtered);
+}
+
+// Income vs Expense Chart
+let incomeExpenseChart;
+const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
+incomeExpenseChart = new Chart(incomeExpenseCtx, {
+    type: 'bar',
+    data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+            label: 'Income',
+            data: [85000, 82000, 88000, 85000, 90000, 85000],
+            backgroundColor: 'rgba(16, 185, 129, 0.8)',
+            borderColor: 'rgba(16, 185, 129, 1)',
+            borderWidth: 2,
+            borderRadius: 8
+        }, {
+            label: 'Expenses',
+            data: [54000, 51000, 56000, 52500, 58000, 52500],
+            backgroundColor: 'rgba(239, 68, 68, 0.8)',
+            borderColor: 'rgba(239, 68, 68, 1)',
+            borderWidth: 2,
+            borderRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    padding: 15
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        return context.dataset.label + ': ' + formatIndianCurrency(context.parsed.y);
+                    }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    callback: function(value) {
+                        return '₹' + (value/1000) + 'k';
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Expense Breakdown Chart
+const expenseBreakdownCtx = document.getElementById('expenseBreakdownChart').getContext('2d');
+const expenseBreakdownChart = new Chart(expenseBreakdownCtx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Food', 'Rent', 'Transport', 'Bills', 'Entertainment', 'Healthcare'],
+        datasets: [{
+            data: [12500, 20000, 2800, 5500, 5600, 2000],
+            backgroundColor: [
+                'rgba(239, 68, 68, 0.8)',
+                'rgba(59, 130, 246, 0.8)',
+                'rgba(245, 158, 11, 0.8)',
+                'rgba(99, 102, 241, 0.8)',
+                'rgba(236, 72, 153, 0.8)',
+                'rgba(16, 185, 129, 0.8)'
+            ],
+            borderColor: '#ffffff',
+            borderWidth: 3
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    padding: 15,
+                    generateLabels: function(chart) {
+                        const data = chart.data;
+                        return data.labels.map((label, i) => ({
+                            text: label + ': ' + formatIndianCurrency(data.datasets[0].data[i]),
+                            fillStyle: data.datasets[0].backgroundColor[i],
+                            hidden: false,
+                            index: i
+                        }));
+                    }
+                }
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = ((context.parsed / total) * 100).toFixed(1);
+                        return context.label + ': ' + formatIndianCurrency(context.parsed) + ' (' + percentage + '%)';
+                    }
+                }
+            }
+        }
+    }
+});
+
+// Filter Chart Function
+function filterChart(period) {
+    // Update active button
+    document.querySelectorAll('.time-filter button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    event.target.classList.add('active');
+
+    // Update chart data based on period
+    let newLabels, newIncomeData, newExpenseData;
+    
+    if (period === 'weekly') {
+        newLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+        newIncomeData = [0, 0, 15000, 0, 0, 0, 85000];
+        newExpenseData = [5000, 3500, 8000, 6500, 7500, 12000, 10000];
+    } else if (period === 'monthly') {
+        newLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+        newIncomeData = [85000, 82000, 88000, 85000, 90000, 85000];
+        newExpenseData = [54000, 51000, 56000, 52500, 58000, 52500];
+    } else {
+        newLabels = ['2019', '2020', '2021', '2022', '2023', '2024'];
+        newIncomeData = [850000, 920000, 1050000, 1150000, 1200000, 510000];
+        newExpenseData = [620000, 680000, 750000, 820000, 890000, 315000];
+    }
+    
+    incomeExpenseChart.data.labels = newLabels;
+    incomeExpenseChart.data.datasets[0].data = newIncomeData;
+    incomeExpenseChart.data.datasets[1].data = newExpenseData;
+    incomeExpenseChart.update();
+}
+
+// Export Report Function
+function exportReport() {
+    alert('Exporting report... This would download a PDF/Excel report with all financial data.');
+    // In a real application, this would generate and download a report
+}
+
+// Add Transaction Function
+function addTransaction() {
+    alert('Opening transaction form... This would open a modal to add a new transaction.');
+    // In a real application, this would open a modal form
+}
+
+// Initialize
+document.addEventListener('DOMContentLoaded', function() {
+    populateTransactions();
+});
