@@ -6,33 +6,30 @@
     <title>Personal Finance Dashboard - India</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         :root {
-            --primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --danger: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --warning: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            --info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
-            
+            --grad-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --grad-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            --grad-danger: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            --grad-warning: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            --grad-info: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            --grad-dark: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+            --grad-pink: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --bg-primary: #0f0f23;
             --bg-secondary: #1a1a2e;
             --bg-card: rgba(255, 255, 255, 0.05);
-            --text-primary: #ffffff;
+            --text-primary: #fff;
             --text-secondary: #a0a0b8;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --border: rgba(255, 255, 255, 0.1);
+            --shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
             --glow: 0 0 20px rgba(102, 126, 234, 0.5);
+            --radius: 12px;
+            --radius-lg: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -42,14 +39,10 @@
             overflow-x: hidden;
         }
 
-        /* Animated Background */
         body::before {
             content: '';
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: 
                 radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
@@ -58,86 +51,70 @@
             animation: bgShift 20s ease infinite;
         }
 
-        @keyframes bgShift {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-        }
+        @keyframes bgShift { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-30px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(50px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+        @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
 
-        .dashboard {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 30px;
-        }
-
-        /* Header with Glass Effect */
-        .header {
+        /* Utility Classes */
+        .glass {
             background: var(--bg-card);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
-            padding: 25px 40px;
-            border-radius: 20px;
-            margin-bottom: 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             box-shadow: var(--shadow);
-            animation: slideDown 0.6s ease;
         }
 
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .header h1 {
-            background: var(--primary);
+        .gradient-text {
+            background: var(--grad-primary);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+        }
+
+        .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        .flex-center { display: flex; align-items: center; justify-content: center; }
+        .flex-gap { display: flex; gap: 15px; flex-wrap: wrap; }
+
+        /* Dashboard */
+        .dashboard { max-width: 1600px; margin: 0 auto; padding: 30px; }
+
+        /* Header */
+        .header {
+            padding: 25px 40px;
+            margin-bottom: 40px;
+            animation: slideDown 0.6s ease;
+        }
+
+        .header h1 {
             font-size: 32px;
             font-weight: 800;
+            letter-spacing: -0.5px;
             display: flex;
             align-items: center;
             gap: 15px;
-            letter-spacing: -0.5px;
         }
 
-        .header h1 i {
-            background: var(--primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 36px;
-        }
+        .header h1 i { font-size: 36px; }
 
-        .header-actions {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-
+        /* Buttons */
         .btn {
             padding: 12px 28px;
             border: none;
-            border-radius: 12px;
+            border-radius: var(--radius);
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
+            font: 600 14px 'Inter', sans-serif;
+            transition: var(--transition);
+            display: inline-flex;
             align-items: center;
             gap: 10px;
             position: relative;
             overflow: hidden;
-            font-family: 'Inter', sans-serif;
         }
 
         .btn::before {
@@ -151,102 +128,64 @@
             transition: left 0.5s;
         }
 
-        .btn:hover::before {
-            left: 100%;
-        }
+        .btn:hover::before { left: 100%; }
+        .btn:hover { transform: translateY(-2px); }
 
         .btn-primary {
-            background: var(--primary);
-            color: white;
+            background: var(--grad-primary);
+            color: #fff;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
-        }
+        .btn-primary:hover { box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6); }
 
         .btn-secondary {
             background: var(--bg-card);
             color: var(--text-primary);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--border);
             backdrop-filter: blur(10px);
         }
 
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateY(-2px);
+        .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font: 600 12px 'Inter', sans-serif;
+            transition: var(--transition);
         }
 
-        .btn-danger {
-            background: var(--danger);
-            color: white;
-            padding: 8px 16px;
-            font-size: 12px;
-        }
+        .btn-edit { background: var(--grad-success); color: #fff; }
+        .btn-delete { background: var(--grad-danger); color: #fff; }
 
-        /* Modal Styles */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
+            inset: 0;
             z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
             animation: fadeIn 0.3s ease;
         }
 
-        .modal.active {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
+        .modal.active { display: flex; justify-content: center; align-items: center; }
 
         .modal-content {
             background: var(--bg-secondary);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
             padding: 40px;
             width: 90%;
             max-width: 500px;
             box-shadow: var(--shadow), var(--glow);
             animation: slideUp 0.3s ease;
-            position: relative;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .modal-header h2 {
-            background: var(--primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 24px;
-            font-weight: 700;
-        }
+        .modal-header { margin-bottom: 30px; }
+        .modal-header h2 { font-size: 24px; font-weight: 700; }
 
         .close-btn {
             background: none;
@@ -254,13 +193,10 @@
             color: var(--text-secondary);
             font-size: 28px;
             cursor: pointer;
-            transition: all 0.3s;
             width: 40px;
             height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             border-radius: 10px;
+            transition: var(--transition);
         }
 
         .close-btn:hover {
@@ -269,56 +205,45 @@
             transform: rotate(90deg);
         }
 
-        .form-group {
-            margin-bottom: 25px;
-        }
+        /* Form */
+        .form-group { margin-bottom: 25px; }
 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 14px;
+            font: 600 14px/1 'Inter', sans-serif;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
 
         .form-group input,
-        .form-group select {
+        .form-group select,
+        .filter-select {
             width: 100%;
             padding: 14px 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
             background: rgba(255, 255, 255, 0.05);
             color: var(--text-primary);
-            font-size: 15px;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
+            font: 15px 'Inter', sans-serif;
+            transition: var(--transition);
         }
 
         .form-group input:focus,
-        .form-group select:focus {
+        .form-group select:focus,
+        .filter-select:focus {
             outline: none;
             border-color: rgba(102, 126, 234, 0.5);
             background: rgba(255, 255, 255, 0.08);
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
         }
 
-        .form-group input::placeholder {
-            color: var(--text-secondary);
-        }
+        .form-group input::placeholder { color: var(--text-secondary); }
+        .form-actions { display: flex; gap: 15px; margin-top: 30px; }
+        .form-actions button { flex: 1; }
 
-        .form-actions {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .form-actions button {
-            flex: 1;
-        }
-
-        /* KPI Cards with Gradient Borders */
+        /* KPI Grid */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -327,32 +252,17 @@
         }
 
         .kpi-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
             padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.6s ease;
-            animation-fill-mode: both;
+            animation: fadeInUp 0.6s ease both;
         }
 
         .kpi-card:nth-child(1) { animation-delay: 0.1s; }
         .kpi-card:nth-child(2) { animation-delay: 0.2s; }
         .kpi-card:nth-child(3) { animation-delay: 0.3s; }
         .kpi-card:nth-child(4) { animation-delay: 0.4s; }
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
 
         .kpi-card::before {
             content: '';
@@ -361,14 +271,12 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: var(--primary);
+            background: var(--grad-primary);
             transform: scaleX(0);
             transition: transform 0.4s;
         }
 
-        .kpi-card:hover::before {
-            transform: scaleX(1);
-        }
+        .kpi-card:hover::before { transform: scaleX(1); }
 
         .kpi-card:hover {
             transform: translateY(-8px);
@@ -376,17 +284,11 @@
             border-color: rgba(102, 126, 234, 0.5);
         }
 
-        .kpi-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
+        .kpi-header { margin-bottom: 20px; }
 
         .kpi-title {
             color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 600;
+            font: 600 13px/1 'Inter', sans-serif;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -395,44 +297,19 @@
             width: 56px;
             height: 56px;
             border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-size: 26px;
-            position: relative;
             animation: float 3s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .icon-balance {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
-        }
-
-        .icon-income {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            box-shadow: 0 8px 16px rgba(79, 172, 254, 0.3);
-        }
-
-        .icon-expense {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            box-shadow: 0 8px 16px rgba(250, 112, 154, 0.3);
-        }
-
-        .icon-savings {
-            background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
-            box-shadow: 0 8px 16px rgba(48, 207, 208, 0.3);
-        }
+        .icon-balance { background: var(--grad-primary); box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3); }
+        .icon-income { background: var(--grad-success); box-shadow: 0 8px 16px rgba(79, 172, 254, 0.3); }
+        .icon-expense { background: var(--grad-danger); box-shadow: 0 8px 16px rgba(250, 112, 154, 0.3); }
+        .icon-savings { background: var(--grad-dark); box-shadow: 0 8px 16px rgba(48, 207, 208, 0.3); }
 
         .kpi-value {
-            font-size: 36px;
-            font-weight: 800;
+            font: 800 36px/1 'Inter', sans-serif;
             margin-bottom: 12px;
-            background: linear-gradient(135deg, #ffffff 0%, #a0a0b8 100%);
+            background: linear-gradient(135deg, #fff 0%, #a0a0b8 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: -1px;
@@ -440,24 +317,16 @@
 
         .kpi-subtitle {
             color: var(--text-secondary);
-            font-size: 13px;
+            font: 500 13px 'Inter', sans-serif;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 500;
         }
 
-        .trend-up {
-            color: #00f2fe;
-            font-weight: 600;
-        }
+        .trend-up { color: #00f2fe; font-weight: 600; }
+        .trend-down { color: #fee140; font-weight: 600; }
 
-        .trend-down {
-            color: #fee140;
-            font-weight: 600;
-        }
-
-        /* Chart Containers with Glass Effect */
+        /* Charts */
         .chart-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
@@ -465,48 +334,31 @@
             margin-bottom: 40px;
         }
 
-        .chart-container {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-            animation: fadeInUp 0.8s ease;
-        }
+        .chart-container { padding: 30px; animation: fadeInUp 0.8s ease; }
 
         .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 25px;
             flex-wrap: wrap;
             gap: 15px;
         }
 
         .chart-title {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--text-primary);
+            font: 700 20px 'Inter', sans-serif;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .chart-title i {
-            background: var(--primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        .chart-title i { background: var(--grad-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
-        /* Pill-style Time Filter */
+        /* Time Filter */
         .time-filter {
             display: flex;
             gap: 8px;
             background: rgba(255, 255, 255, 0.05);
             padding: 6px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
         }
 
         .time-filter button {
@@ -515,16 +367,14 @@
             background: transparent;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
+            font: 600 13px 'Inter', sans-serif;
             color: var(--text-secondary);
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
         }
 
         .time-filter button.active {
-            background: var(--primary);
-            color: white;
+            background: var(--grad-primary);
+            color: #fff;
             box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
         }
 
@@ -533,18 +383,7 @@
             color: var(--text-primary);
         }
 
-        /* Insights with Gradient Backgrounds */
-        .insights-container {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-            margin-bottom: 40px;
-            animation: fadeInUp 1s ease;
-        }
-
+        /* Insights */
         .insight-item {
             display: flex;
             align-items: flex-start;
@@ -554,7 +393,7 @@
             border-radius: 16px;
             margin-bottom: 15px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .insight-item:hover {
@@ -563,44 +402,21 @@
             border-color: rgba(102, 126, 234, 0.3);
         }
 
-        .insight-item:last-child {
-            margin-bottom: 0;
-        }
+        .insight-item:last-child { margin-bottom: 0; }
 
         .insight-icon {
             width: 48px;
             height: 48px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             flex-shrink: 0;
             font-size: 20px;
         }
 
-        .insight-content h4 {
-            font-size: 16px;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
+        .insight-content h4 { font-size: 16px; margin-bottom: 8px; }
+        .insight-content p { color: var(--text-secondary); font-size: 14px; line-height: 1.6; }
 
-        .insight-content p {
-            color: var(--text-secondary);
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        /* Savings Goals with Animated Progress */
-        .goals-container {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-            margin-bottom: 40px;
-            animation: fadeInUp 1.2s ease;
-        }
+        /* Goals */
+        .goals-container { padding: 30px; margin-bottom: 40px; animation: fadeInUp 1.2s ease; }
 
         .goal-item {
             margin-bottom: 28px;
@@ -608,7 +424,7 @@
             background: rgba(255, 255, 255, 0.03);
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .goal-item:hover {
@@ -616,44 +432,23 @@
             border-color: rgba(102, 126, 234, 0.3);
         }
 
-        .goal-item:last-child {
-            margin-bottom: 0;
-        }
+        .goal-item:last-child { margin-bottom: 0; }
+        .goal-header { margin-bottom: 12px; }
+        .goal-name { font: 600 15px 'Inter', sans-serif; display: flex; align-items: center; gap: 12px; }
+        .goal-amount { font: 500 14px 'Inter', sans-serif; color: var(--text-secondary); }
 
-        .goal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-
-        .goal-name {
-            font-weight: 600;
-            color: var(--text-primary);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 15px;
-        }
-
-        .goal-amount {
-            font-size: 14px;
-            color: var(--text-secondary);
-            font-weight: 500;
-        }
-
+        /* Progress Bar */
         .progress-bar {
             height: 14px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 20px;
             overflow: hidden;
-            position: relative;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            background: var(--grad-success);
             border-radius: 20px;
             transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
@@ -663,40 +458,20 @@
         .progress-fill::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
+            inset: 0;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
             animation: shimmer 2s infinite;
         }
 
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        /* Table Styling */
+        /* Table */
         .table-container {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
             padding: 30px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
             margin-bottom: 40px;
             overflow-x: auto;
             animation: fadeInUp 1.4s ease;
         }
 
-        .table-controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
+        .table-controls { margin-bottom: 25px; gap: 15px; }
 
         .search-box {
             position: relative;
@@ -708,25 +483,9 @@
         .search-box input {
             width: 100%;
             padding: 12px 45px 12px 20px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
         }
 
-        .search-box input::placeholder {
-            color: var(--text-secondary);
-        }
-
-        .search-box input:focus {
-            outline: none;
-            border-color: rgba(102, 126, 234, 0.5);
-            background: rgba(255, 255, 255, 0.08);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+        .search-box input::placeholder { color: var(--text-secondary); }
 
         .search-box i {
             position: absolute;
@@ -736,84 +495,42 @@
             color: var(--text-secondary);
         }
 
-        .filter-select {
-            padding: 12px 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-primary);
-            cursor: pointer;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
-        }
+        .filter-select { width: auto; padding: 12px 18px; cursor: pointer; }
 
-        .filter-select:focus {
-            outline: none;
-            border-color: rgba(102, 126, 234, 0.5);
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        thead {
-            background: rgba(255, 255, 255, 0.03);
-        }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: rgba(255, 255, 255, 0.03); }
 
         th {
             padding: 16px;
             text-align: left;
-            font-weight: 700;
-            font-size: 12px;
+            font: 700 12px 'Inter', sans-serif;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 1px;
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border);
         }
 
         td {
             padding: 18px 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 14px;
-            color: var(--text-primary);
         }
 
-        tr:hover {
-            background: rgba(255, 255, 255, 0.03);
-        }
+        tr:hover { background: rgba(255, 255, 255, 0.03); }
 
         .transaction-type {
             padding: 6px 14px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
+            font: 600 12px 'Inter', sans-serif;
             display: inline-block;
         }
 
-        .type-income {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
+        .type-income { background: var(--grad-success); color: #fff; }
+        .type-expense { background: var(--grad-danger); color: #fff; }
+        .amount-income { color: #00f2fe; font-weight: 700; }
+        .amount-expense { color: #fee140; font-weight: 700; }
 
-        .type-expense {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            color: white;
-        }
-
-        .amount-income {
-            color: #00f2fe;
-            font-weight: 700;
-        }
-
-        .amount-expense {
-            color: #fee140;
-            font-weight: 700;
-        }
-
-        /* Budget Cards */
+        /* Budget */
         .budget-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -822,13 +539,8 @@
         }
 
         .budget-card {
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
             padding: 25px;
-            border-radius: 20px;
-            border: 1px solid var(--border-color);
-            box-shadow: var(--shadow);
-            transition: all 0.3s;
+            transition: var(--transition);
         }
 
         .budget-card:hover {
@@ -837,542 +549,140 @@
             border-color: rgba(102, 126, 234, 0.3);
         }
 
-        .budget-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .budget-category {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: 600;
-            font-size: 15px;
-        }
+        .budget-header { margin-bottom: 18px; }
+        .budget-category { display: flex; align-items: center; gap: 12px; font: 600 15px 'Inter', sans-serif; }
 
         .category-icon {
             width: 48px;
             height: 48px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-size: 20px;
         }
 
         .budget-status {
-            font-size: 12px;
+            font: 600 12px 'Inter', sans-serif;
             padding: 6px 12px;
             border-radius: 20px;
-            font-weight: 600;
         }
 
-        .status-good {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
+        .status-good { background: var(--grad-success); color: #fff; }
+        .status-warning { background: var(--grad-warning); color: #8b4513; }
+        .status-over { background: var(--grad-danger); color: #fff; }
 
-        .status-warning {
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            color: #8b4513;
-        }
+        .budget-amounts { margin-bottom: 12px; font: 500 14px 'Inter', sans-serif; }
+        .budget-spent { font-weight: 700; }
+        .budget-total { color: var(--text-secondary); }
 
-        .status-over {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            color: white;
-        }
+        .action-buttons { display: flex; gap: 8px; }
 
-        .budget-amounts {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .budget-spent {
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .budget-total {
-            color: var(--text-secondary);
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-
-        .action-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 600;
-            transition: all 0.3s;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .btn-edit {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-
-        .btn-delete {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            color: white;
-        }
-
-        /* Toast Notification */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: var(--bg-card);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border-color);
             padding: 20px 25px;
-            border-radius: 12px;
-            box-shadow: var(--shadow), var(--glow);
             display: none;
-            align-items: center;
             gap: 15px;
             z-index: 2000;
             animation: slideInRight 0.3s ease;
         }
 
-        .toast.show {
-            display: flex;
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
+        .toast.show { display: flex; }
 
         .toast-icon {
             width: 40px;
             height: 40px;
             border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             font-size: 20px;
         }
 
-        .toast-success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
+        .toast-success { background: var(--grad-success); }
+        .toast-message { font-weight: 600; }
 
-        .toast-message {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
-            .dashboard {
-                padding: 20px 15px;
-            }
-
-            .header {
-                padding: 20px;
-            }
-
-            .header h1 {
-                font-size: 24px;
-            }
-
-            .kpi-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .chart-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .budget-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .kpi-value {
-                font-size: 28px;
-            }
-
-            table {
-                font-size: 12px;
-            }
-
-            th, td {
-                padding: 12px 10px;
-            }
-
-            .modal-content {
-                width: 95%;
-                padding: 25px;
-            }
+            .dashboard { padding: 20px 15px; }
+            .header { padding: 20px; }
+            .header h1 { font-size: 24px; }
+            .kpi-grid, .chart-grid, .budget-grid { grid-template-columns: 1fr; }
+            .kpi-value { font-size: 28px; }
+            table { font-size: 12px; }
+            th, td { padding: 12px 10px; }
+            .modal-content { width: 95%; padding: 25px; }
         }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
-            height: 10px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-            }
-        </style>
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--grad-primary); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: linear-gradient(135deg, #764ba2 0%, #667eea 100%); }
+    </style>
 </head>
 <body>
     <div class="dashboard">
         <!-- Header -->
-        <div class="header">
-            <h1>
-                <i class="fas fa-chart-line"></i>
-                Personal Finance Dashboard
-            </h1>
-            <div class="header-actions">
-                <button class="btn btn-secondary" onclick="exportReport()">
-                    <i class="fas fa-download"></i>
-                    Export Report
-                </button>
-                <button class="btn btn-primary" onclick="openAddTransactionModal()">
-                    <i class="fas fa-plus"></i>
-                    Add Transaction
-                </button>
+        <header class="header glass flex-between">
+            <h1 class="gradient-text"><i class="fas fa-chart-line gradient-text"></i>Personal Finance Dashboard</h1>
+            <div class="flex-gap">
+                <button class="btn btn-secondary" onclick="exportReport()"><i class="fas fa-download"></i>Export Report</button>
+                <button class="btn btn-primary" onclick="openModal('transaction')"><i class="fas fa-plus"></i>Add Transaction</button>
             </div>
-        </div>
+        </header>
 
         <!-- KPI Cards -->
-        <div class="kpi-grid">
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-title">Total Balance</div>
-                    </div>
-                    <div class="kpi-icon icon-balance">
-                        <i class="fas fa-wallet"></i>
-                    </div>
-                </div>
-                <div class="kpi-value" id="totalBalance">₹3,45,000</div>
-                <div class="kpi-subtitle">
-                    <span class="trend-up"><i class="fas fa-arrow-up"></i> 12.5%</span>
-                    <span>from last month</span>
-                </div>
-            </div>
-
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-title">Monthly Income</div>
-                    </div>
-                    <div class="kpi-icon icon-income">
-                        <i class="fas fa-arrow-down"></i>
-                    </div>
-                </div>
-                <div class="kpi-value" id="monthlyIncome">₹85,000</div>
-                <div class="kpi-subtitle">
-                    <span class="trend-up"><i class="fas fa-arrow-up"></i> 5.2%</span>
-                    <span>from last month</span>
-                </div>
-            </div>
-
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-title">Monthly Expenses</div>
-                    </div>
-                    <div class="kpi-icon icon-expense">
-                        <i class="fas fa-arrow-up"></i>
-                    </div>
-                </div>
-                <div class="kpi-value" id="monthlyExpenses">₹52,500</div>
-                <div class="kpi-subtitle">
-                    <span class="trend-down"><i class="fas fa-arrow-down"></i> 3.1%</span>
-                    <span>from last month</span>
-                </div>
-            </div>
-
-            <div class="kpi-card">
-                <div class="kpi-header">
-                    <div>
-                        <div class="kpi-title">Monthly Savings</div>
-                    </div>
-                    <div class="kpi-icon icon-savings">
-                        <i class="fas fa-piggy-bank"></i>
-                    </div>
-                </div>
-                <div class="kpi-value" id="monthlySavings">₹32,500</div>
-                <div class="kpi-subtitle">
-                    <span>Savings Rate: <strong>38.2%</strong></span>
-                </div>
-            </div>
-        </div>
+        <section class="kpi-grid" id="kpiGrid"></section>
 
         <!-- Charts -->
-        <div class="chart-grid">
-            <div class="chart-container">
-                <div class="chart-header">
+        <section class="chart-grid">
+            <div class="chart-container glass">
+                <div class="chart-header flex-between">
                     <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Income vs Expenses</h3>
                     <div class="time-filter">
-                        <button class="active" onclick="filterChart('weekly')">Weekly</button>
-                        <button onclick="filterChart('monthly')">Monthly</button>
-                        <button onclick="filterChart('yearly')">Yearly</button>
+                        <button class="active" data-period="weekly">Weekly</button>
+                        <button data-period="monthly">Monthly</button>
+                        <button data-period="yearly">Yearly</button>
                     </div>
                 </div>
                 <canvas id="incomeExpenseChart"></canvas>
             </div>
-
-            <div class="chart-container">
-                <div class="chart-header">
+            <div class="chart-container glass">
+                <div class="chart-header flex-between">
                     <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Expense Breakdown</h3>
                 </div>
                 <canvas id="expenseBreakdownChart"></canvas>
             </div>
-        </div>
+        </section>
 
         <!-- Insights -->
-        <div class="insights-container">
-            <div class="chart-header">
+        <section class="chart-container glass" style="margin-bottom:40px">
+            <div class="chart-header flex-between">
                 <h3 class="chart-title"><i class="fas fa-lightbulb"></i> Smart Insights</h3>
             </div>
-            <div class="insight-item">
-                <div class="insight-icon" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
-                    <i class="fas fa-exclamation-triangle" style="color: #8b4513;"></i>
-                </div>
-                <div class="insight-content">
-                    <h4>Food Spending Alert</h4>
-                    <p>You spent 20% more on food this month (₹12,500 vs ₹10,400). Consider meal planning to save more.</p>
-                </div>
-            </div>
-            <div class="insight-item">
-                <div class="insight-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                    <i class="fas fa-check-circle" style="color: white;"></i>
-                </div>
-                <div class="insight-content">
-                    <h4>Great Job on Transport!</h4>
-                    <p>Your transport expenses decreased by 15% this month. Keep up the good work!</p>
-                </div>
-            </div>
-            <div class="insight-item">
-                <div class="insight-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                    <i class="fas fa-chart-line" style="color: white;"></i>
-                </div>
-                <div class="insight-content">
-                    <h4>Forecast: Next Month</h4>
-                    <p>Based on trends, estimated expenses for next month: ₹54,200. Plan accordingly!</p>
-                </div>
-            </div>
-        </div>
+            <div id="insightsContainer"></div>
+        </section>
 
-        <!-- Savings Goals -->
-        <div class="goals-container">
-            <div class="chart-header">
-                <h3 class="chart-title"><i class="fas fa-bullseye"></i> Savings Goals</h3>
-            </div>
-            <div class="goal-item">
-                <div class="goal-header">
-                    <div class="goal-name">
-                        <i class="fas fa-umbrella" style="color: #667eea;"></i>
-                        Emergency Fund
-                    </div>
-                    <div class="goal-amount">₹1,50,000 / ₹2,00,000</div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 75%"></div>
-                </div>
-            </div>
-            <div class="goal-item">
-                <div class="goal-header">
-                    <div class="goal-name">
-                        <i class="fas fa-plane" style="color: #fcb69f;"></i>
-                        Goa Trip
-                    </div>
-                    <div class="goal-amount">₹35,000 / ₹60,000</div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 58.3%"></div>
-                </div>
-            </div>
-            <div class="goal-item">
-                <div class="goal-header">
-                    <div class="goal-name">
-                        <i class="fas fa-chart-pie" style="color: #00f2fe;"></i>
-                        Investment Portfolio
-                    </div>
-                    <div class="goal-amount">₹2,50,000 / ₹5,00,000</div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 50%"></div>
-                </div>
-            </div>
-            <div class="goal-item">
-                <div class="goal-header">
-                    <div class="goal-name">
-                        <i class="fas fa-laptop" style="color: #764ba2;"></i>
-                        New Laptop
-                    </div>
-                    <div class="goal-amount">₹25,000 / ₹80,000</div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" style="width: 31.25%"></div>
-                </div>
-            </div>
-        </div>
+        <!-- Goals -->
+        <section class="goals-container glass" id="goalsContainer"></section>
 
-        <!-- Budget Tracking -->
-        <div class="chart-container" style="margin-bottom: 30px;">
-            <div class="chart-header">
+        <!-- Budget -->
+        <section class="chart-container glass" style="margin-bottom:30px">
+            <div class="chart-header flex-between">
                 <h3 class="chart-title"><i class="fas fa-calculator"></i> Budget Tracking</h3>
             </div>
-            <div class="budget-grid">
-                <div class="budget-card">
-                    <div class="budget-header">
-                        <div class="budget-category">
-                            <div class="category-icon" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
-                                <i class="fas fa-utensils" style="color: white;"></i>
-                            </div>
-                            Food
-                        </div>
-                        <div class="budget-status status-warning">85%</div>
-                    </div>
-                    <div class="budget-amounts">
-                        <span class="budget-spent">₹12,500</span>
-                        <span class="budget-total">/ ₹15,000</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 83.3%; background: linear-gradient(90deg, #fcb69f, #ffecd2);"></div>
-                    </div>
-                </div>
+            <div class="budget-grid" id="budgetGrid"></div>
+        </section>
 
-                <div class="budget-card">
-                    <div class="budget-header">
-                        <div class="budget-category">
-                            <div class="category-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                                <i class="fas fa-home" style="color: white;"></i>
-                            </div>
-                            Rent
-                        </div>
-                        <div class="budget-status status-good">100%</div>
-                    </div>
-                    <div class="budget-amounts">
-                        <span class="budget-spent">₹20,000</span>
-                        <span class="budget-total">/ ₹20,000</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%;"></div>
-                    </div>
-                </div>
-
-                <div class="budget-card">
-                    <div class="budget-header">
-                        <div class="budget-category">
-                            <div class="category-icon" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
-                                <i class="fas fa-bus" style="color: #8b4513;"></i>
-                            </div>
-                            Transport
-                        </div>
-                        <div class="budget-status status-good">56%</div>
-                    </div>
-                    <div class="budget-amounts">
-                        <span class="budget-spent">₹2,800</span>
-                        <span class="budget-total">/ ₹5,000</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 56%;"></div>
-                    </div>
-                </div>
-
-                <div class="budget-card">
-                    <div class="budget-header">
-                        <div class="budget-category">
-                            <div class="category-icon" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
-                                <i class="fas fa-file-invoice-dollar" style="color: #764ba2;"></i>
-                            </div>
-                            Bills
-                        </div>
-                        <div class="budget-status status-good">73%</div>
-                    </div>
-                    <div class="budget-amounts">
-                        <span class="budget-spent">₹5,500</span>
-                        <span class="budget-total">/ ₹7,500</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 73.3%;"></div>
-                    </div>
-                </div>
-
-                <div class="budget-card">
-                    <div class="budget-header">
-                        <div class="budget-category">
-                            <div class="category-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-                                <i class="fas fa-film" style="color: white;"></i>
-                            </div>
-                            Entertainment
-                        </div>
-                        <div class="budget-status status-over">112%</div>
-                    </div>
-                    <div class="budget-amounts">
-                        <span class="budget-spent">₹5,600</span>
-                        <span class="budget-total">/ ₹5,000</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 100%; background: linear-gradient(90deg, #fa709a, #fee140);"></div>
-                    </div>
-                </div>
-
-                <div class="budget-card">
-                    <div class="budget-header">
-                        <div class="budget-category">
-                            <div class="category-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-                                <i class="fas fa-heartbeat" style="color: white;"></i>
-                            </div>
-                            Healthcare
-                        </div>
-                        <div class="budget-status status-good">40%</div>
-                    </div>
-                    <div class="budget-amounts">
-                        <span class="budget-spent">₹2,000</span>
-                        <span class="budget-total">/ ₹5,000</span>
-                    </div>
-                    <div class="progress-bar">
-                        <div class="progress-fill" style="width: 40%;"></div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Transactions Table -->
-        <div class="table-container">
-            <div class="chart-header">
+        <!-- Transactions -->
+        <section class="table-container glass">
+            <div class="chart-header flex-between">
                 <h3 class="chart-title"><i class="fas fa-list"></i> Recent Transactions</h3>
             </div>
-            <div class="table-controls">
+            <div class="table-controls flex-between">
                 <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search transactions..." onkeyup="searchTransactions()">
+                    <input type="text" id="searchInput" placeholder="Search transactions...">
                     <i class="fas fa-search"></i>
                 </div>
-                <select class="filter-select" id="categoryFilter" onchange="filterTransactions()">
+                <select class="filter-select" id="categoryFilter">
                     <option value="all">All Categories</option>
                     <option value="Food">Food</option>
                     <option value="Rent">Rent</option>
@@ -1383,357 +693,391 @@
                     <option value="Salary">Salary</option>
                     <option value="Freelance">Freelance</option>
                 </select>
-                <select class="filter-select" id="typeFilter" onchange="filterTransactions()">
+                <select class="filter-select" id="typeFilter">
                     <option value="all">All Types</option>
                     <option value="income">Income</option>
                     <option value="expense">Expense</option>
                 </select>
             </div>
-            <table id="transactionsTable">
+            <table>
                 <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Description</th>
-                        <th>Category</th>
-                        <th>Type</th>
-                        <th>Amount</th>
-                        <th>Actions</th>
-                    </tr>
+                    <tr><th>Date</th><th>Description</th><th>Category</th><th>Type</th><th>Amount</th><th>Actions</th></tr>
                 </thead>
-                <tbody id="transactionBody">
-                    <!-- Transactions will be populated by JavaScript -->
-                </tbody>
+                <tbody id="transactionBody"></tbody>
             </table>
-        </div>
+        </section>
     </div>
 
-    <!-- Add Transaction Modal -->
+    <!-- Transaction Modal -->
     <div id="transactionModal" class="modal">
         <div class="modal-content">
-            <div class="modal-header">
-                <h2><i class="fas fa-plus-circle"></i> Add New Transaction</h2>
-                <button class="close-btn" onclick="closeModal()">&times;</button>
+            <div class="modal-header flex-between">
+                <h2 class="gradient-text"><i class="fas fa-plus-circle"></i> Add Transaction</h2>
+                <button class="close-btn" onclick="closeModal('transaction')">&times;</button>
             </div>
-            <form id="transactionForm" onsubmit="addTransaction(event)">
+            <form id="transactionForm">
+                <div class="form-group"><label>Date</label><input type="date" id="txDate" required></div>
+                <div class="form-group"><label>Description</label><input type="text" id="txDesc" placeholder="e.g., Grocery Shopping" required></div>
                 <div class="form-group">
-                    <label for="date">Date</label>
-                    <input type="date" id="date" required>
-                </div>
-                <div class="form-group">
-                    <label for="description">Description</label>
-                    <input type="text" id="description" placeholder="e.g., Grocery Shopping" required>
-                </div>
-                <div class="form-group">
-                    <label for="category">Category</label>
-                    <select id="category" required>
+                    <label>Category</label>
+                    <select id="txCategory" required>
                         <option value="">Select Category</option>
-                        <option value="Food">Food</option>
-                        <option value="Rent">Rent</option>
-                        <option value="Transport">Transport</option>
-                        <option value="Bills">Bills</option>
-                        <option value="Entertainment">Entertainment</option>
-                        <option value="Healthcare">Healthcare</option>
-                        <option value="Salary">Salary</option>
-                        <option value="Freelance">Freelance</option>
-                        <option value="Other">Other</option>
+                        <option>Food</option><option>Rent</option><option>Transport</option>
+                        <option>Bills</option><option>Entertainment</option><option>Healthcare</option>
+                        <option>Salary</option><option>Freelance</option><option>Other</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label for="type">Type</label>
-                    <select id="type" required>
+                    <label>Type</label>
+                    <select id="txType" required>
                         <option value="">Select Type</option>
                         <option value="income">Income</option>
                         <option value="expense">Expense</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label for="amount">Amount (₹)</label>
-                    <input type="number" id="amount" placeholder="e.g., 5000" min="1" required>
-                </div>
+                <div class="form-group"><label>Amount (₹)</label><input type="number" id="txAmount" placeholder="e.g., 5000" min="1" required></div>
                 <div class="form-actions">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-check"></i>
-                        Add Transaction
-                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('transaction')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>Add</button>
                 </div>
             </form>
         </div>
     </div>
 
-
-    <!-- 🔽 ADD THIS RIGHT AFTER YOUR TRANSACTION MODAL (keep everything else same) -->
-
-<!-- Goal Modal -->
-<div id="goalModal" class="modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h2><i class="fas fa-bullseye"></i> Add Goal</h2>
-            <button class="close-btn" onclick="closeGoalModal()">&times;</button>
+    <!-- Goal Modal -->
+    <div id="goalModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header flex-between">
+                <h2 class="gradient-text"><i class="fas fa-bullseye"></i> Add Goal</h2>
+                <button class="close-btn" onclick="closeModal('goal')">&times;</button>
+            </div>
+            <form id="goalForm">
+                <div class="form-group"><label>Goal Name</label><input type="text" id="goalName" placeholder="e.g., Buy Car" required></div>
+                <div class="form-group"><label>Target Amount</label><input type="number" id="goalTarget" placeholder="e.g., 500000" required></div>
+                <div class="form-group"><label>Saved Amount</label><input type="number" id="goalSaved" placeholder="e.g., 100000" required></div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('goal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>Save</button>
+                </div>
+            </form>
         </div>
-
-        <form onsubmit="addGoalHandler(event)">
-            <div class="form-group">
-                <label>Goal Name</label>
-                <input type="text" id="goalName" placeholder="e.g., Buy Car" required>
-            </div>
-
-            <div class="form-group">
-                <label>Target Amount</label>
-                <input type="number" id="goalTarget" placeholder="e.g., 500000" required>
-            </div>
-
-            <div class="form-group">
-                <label>Saved Amount</label>
-                <input type="number" id="goalSaved" placeholder="e.g., 100000" required>
-            </div>
-
-            <div class="form-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeGoalModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-check"></i> Save Goal
-                </button>
-            </div>
-        </form>
     </div>
-</div>
 
-    
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <div class="toast-icon toast-success">
-            <i class="fas fa-check"></i>
-        </div>
+    <!-- Toast -->
+    <div id="toast" class="toast glass flex-center">
+        <div class="toast-icon toast-success flex-center"><i class="fas fa-check"></i></div>
         <div class="toast-message"></div>
     </div>
 
-
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { 
-  getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc 
-} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyBMp881TtdVKp3OYG1Wp4nGc_QuL14Bn2c",
-  authDomain: "personal-finance-dashboa-c6283.firebaseapp.com",
-  projectId: "personal-finance-dashboa-c6283",
-  storageBucket: "personal-finance-dashboa-c6283.firebasestorage.app",
-  messagingSenderId: "1082785921001",
-  appId: "1:1082785921001:web:94da7c3a8f648141fd7d78"
-};
+// Firebase Config
+const app = initializeApp({
+    apiKey: "AIzaSyBMp881TtdVKp3OYG1Wp4nGc_QuL14Bn2c",
+    authDomain: "personal-finance-dashboa-c6283.firebaseapp.com",
+    projectId: "personal-finance-dashboa-c6283",
+    storageBucket: "personal-finance-dashboa-c6283.firebasestorage.app",
+    messagingSenderId: "1082785921001",
+    appId: "1:1082785921001:web:94da7c3a8f648141fd7d78"
+});
 
-const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const $ = id => document.getElementById(id);
 
+// ==================== DATA ====================
+const kpiData = [
+    { id: 'totalBalance', title: 'Total Balance', icon: 'fa-wallet', class: 'icon-balance', trend: 'up', percent: '12.5%' },
+    { id: 'monthlyIncome', title: 'Monthly Income', icon: 'fa-arrow-down', class: 'icon-income', trend: 'up', percent: '5.2%' },
+    { id: 'monthlyExpenses', title: 'Monthly Expenses', icon: 'fa-arrow-up', class: 'icon-expense', trend: 'down', percent: '3.1%' },
+    { id: 'monthlySavings', title: 'Monthly Savings', icon: 'fa-piggy-bank', class: 'icon-savings', isSavings: true }
+];
 
+const insightsData = [
+    { icon: 'fa-exclamation-triangle', bg: 'var(--grad-warning)', color: '#8b4513', title: 'Food Spending Alert', text: 'You spent 20% more on food this month (₹12,500 vs ₹10,400). Consider meal planning to save more.' },
+    { icon: 'fa-check-circle', bg: 'var(--grad-success)', color: 'white', title: 'Great Job on Transport!', text: 'Your transport expenses decreased by 15% this month. Keep up the good work!' },
+    { icon: 'fa-chart-line', bg: 'var(--grad-primary)', color: 'white', title: 'Forecast: Next Month', text: 'Based on trends, estimated expenses for next month: ₹54,200. Plan accordingly!' }
+];
 
-// ---------------- MODALS ----------------
+const budgetData = [
+    { name: 'Food', icon: 'fa-utensils', bg: 'var(--grad-danger)', spent: 12500, total: 15000 },
+    { name: 'Rent', icon: 'fa-home', bg: 'var(--grad-primary)', spent: 20000, total: 20000 },
+    { name: 'Transport', icon: 'fa-bus', bg: 'var(--grad-warning)', iconColor: '#8b4513', spent: 2800, total: 5000 },
+    { name: 'Bills', icon: 'fa-file-invoice-dollar', bg: 'var(--grad-info)', iconColor: '#764ba2', spent: 5500, total: 7500 },
+    { name: 'Entertainment', icon: 'fa-film', bg: 'var(--grad-pink)', spent: 5600, total: 5000 },
+    { name: 'Healthcare', icon: 'fa-heartbeat', bg: 'var(--grad-success)', spent: 2000, total: 5000 }
+];
 
-window.openAddTransactionModal = () => {
-  document.getElementById("transactionModal").classList.add("active");
-};
+// ==================== RENDER FUNCTIONS ====================
+const formatCurrency = n => `₹${n.toLocaleString('en-IN')}`;
 
-window.closeModal = () => {
-  document.getElementById("transactionModal").classList.remove("active");
-};
-
-window.openGoalModal = () => {
-  document.getElementById("goalModal").classList.add("active");
-};
-
-window.closeGoalModal = () => {
-  document.getElementById("goalModal").classList.remove("active");
-};
-
-
-
-// ---------------- TOAST ----------------
-
-window.showToast = (msg) => {
-  const toast = document.getElementById("toast");
-  toast.querySelector(".toast-message").innerText = msg;
-  toast.classList.add("show");
-
-  setTimeout(() => toast.classList.remove("show"), 3000);
-};
-
-
-
-// ---------------- TRANSACTIONS ----------------
-
-window.addTransaction = async function (event) {
-  event.preventDefault();
-
-  const t = {
-    date: date.value,
-    description: description.value,
-    category: category.value,
-    type: type.value,
-    amount: parseInt(amount.value)
-  };
-
-  await addDoc(collection(db, "transactions"), t);
-
-  closeModal();
-  showToast("✅ Transaction Added!");
-
-  loadTransactions();
-  updateDashboard();
-};
-
-async function loadTransactions() {
-  const snapshot = await getDocs(collection(db, "transactions"));
-  const tbody = document.getElementById("transactionBody");
-
-  tbody.innerHTML = "";
-
-  snapshot.forEach(docItem => {
-    const t = docItem.data();
-
-    tbody.innerHTML += `
-      <tr>
-        <td>${t.date}</td>
-        <td>${t.description}</td>
-        <td>${t.category}</td>
-        <td>
-          <span class="transaction-type ${t.type === 'income' ? 'type-income' : 'type-expense'}">
-            ${t.type}
-          </span>
-        </td>
-        <td class="${t.type === 'income' ? 'amount-income' : 'amount-expense'}">
-          ₹${t.amount}
-        </td>
-        <td>
-          <button class="action-btn btn-delete" onclick="deleteTransaction('${docItem.id}')">
-            Delete
-          </button>
-        </td>
-      </tr>
-    `;
-  });
+function renderKPIs() {
+    $('kpiGrid').innerHTML = kpiData.map(k => `
+        <div class="kpi-card glass">
+            <div class="kpi-header flex-between">
+                <div class="kpi-title">${k.title}</div>
+                <div class="kpi-icon ${k.class} flex-center"><i class="fas ${k.icon}"></i></div>
+            </div>
+            <div class="kpi-value" id="${k.id}">₹0</div>
+            <div class="kpi-subtitle">
+                ${k.isSavings ? '<span>Savings Rate: <strong id="savingsRate">0%</strong></span>' : 
+                `<span class="trend-${k.trend}"><i class="fas fa-arrow-${k.trend}"></i> ${k.percent}</span><span>from last month</span>`}
+            </div>
+        </div>
+    `).join('');
 }
 
-window.deleteTransaction = async function (id) {
-  await deleteDoc(doc(db, "transactions", id));
-  showToast("🗑️ Deleted!");
+function renderInsights() {
+    $('insightsContainer').innerHTML = insightsData.map(i => `
+        <div class="insight-item">
+            <div class="insight-icon flex-center" style="background:${i.bg}">
+                <i class="fas ${i.icon}" style="color:${i.color}"></i>
+            </div>
+            <div class="insight-content"><h4>${i.title}</h4><p>${i.text}</p></div>
+        </div>
+    `).join('');
+}
 
-  loadTransactions();
-  updateDashboard();
-};
+function renderBudgets() {
+    $('budgetGrid').innerHTML = budgetData.map(b => {
+        const percent = Math.round((b.spent / b.total) * 100);
+        const status = percent > 100 ? 'over' : percent > 80 ? 'warning' : 'good';
+        const fillBg = status === 'over' ? 'var(--grad-danger)' : status === 'warning' ? 'var(--grad-warning)' : 'var(--grad-success)';
+        return `
+            <div class="budget-card glass">
+                <div class="budget-header flex-between">
+                    <div class="budget-category">
+                        <div class="category-icon flex-center" style="background:${b.bg}">
+                            <i class="fas ${b.icon}" style="color:${b.iconColor || 'white'}"></i>
+                        </div>${b.name}
+                    </div>
+                    <div class="budget-status status-${status}">${percent}%</div>
+                </div>
+                <div class="budget-amounts flex-between">
+                    <span class="budget-spent">${formatCurrency(b.spent)}</span>
+                    <span class="budget-total">/ ${formatCurrency(b.total)}</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width:${Math.min(percent, 100)}%;background:${fillBg}"></div>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
 
-
-
-// ---------------- DASHBOARD CALC ----------------
+// ==================== FIREBASE FUNCTIONS ====================
+async function loadTransactions() {
+    const snapshot = await getDocs(collection(db, "transactions"));
+    const tbody = $('transactionBody');
+    tbody.innerHTML = '';
+    
+    snapshot.forEach(d => {
+        const t = d.data();
+        tbody.innerHTML += `
+            <tr>
+                <td>${t.date}</td>
+                <td>${t.description}</td>
+                <td>${t.category}</td>
+                <td><span class="transaction-type type-${t.type}">${t.type}</span></td>
+                <td class="amount-${t.type}">${formatCurrency(t.amount)}</td>
+                <td><button class="action-btn btn-delete" onclick="deleteTx('${d.id}')">Delete</button></td>
+            </tr>
+        `;
+    });
+}
 
 async function updateDashboard() {
-  const snapshot = await getDocs(collection(db, "transactions"));
-
-  let income = 0;
-  let expense = 0;
-
-  snapshot.forEach(doc => {
-    const t = doc.data();
-    if (t.type === "income") income += t.amount;
-    else expense += t.amount;
-  });
-
-  const savings = income - expense;
-
-  document.getElementById("monthlyIncome").innerText = `₹${income}`;
-  document.getElementById("monthlyExpenses").innerText = `₹${expense}`;
-  document.getElementById("monthlySavings").innerText = `₹${savings}`;
-  document.getElementById("totalBalance").innerText = `₹${savings}`;
+    const snapshot = await getDocs(collection(db, "transactions"));
+    let income = 0, expense = 0;
+    
+    snapshot.forEach(d => {
+        const t = d.data();
+        t.type === 'income' ? income += t.amount : expense += t.amount;
+    });
+    
+    const savings = income - expense;
+    const rate = income > 0 ? Math.round((savings / income) * 100) : 0;
+    
+    $('monthlyIncome').textContent = formatCurrency(income);
+    $('monthlyExpenses').textContent = formatCurrency(expense);
+    $('monthlySavings').textContent = formatCurrency(savings);
+    $('totalBalance').textContent = formatCurrency(savings);
+    $('savingsRate').textContent = `${rate}%`;
 }
-
-
-
-// ---------------- GOALS ----------------
 
 async function loadGoals() {
-  const snapshot = await getDocs(collection(db, "goals"));
-  const container = document.getElementById("goalsContainer");
-
-  container.innerHTML = `
-    <div class="chart-header">
-      <h3 class="chart-title"><i class="fas fa-bullseye"></i> Savings Goals</h3>
-      <button class="btn btn-primary" onclick="openGoalModal()">+ Add Goal</button>
-    </div>
-  `;
-
-  snapshot.forEach(docItem => {
-    const g = docItem.data();
-    const percent = (g.saved / g.target) * 100;
-
-    container.innerHTML += `
-      <div class="goal-item">
-        <div class="goal-header">
-          <div class="goal-name">${g.name}</div>
-          <div class="goal-amount">₹${g.saved} / ₹${g.target}</div>
+    const snapshot = await getDocs(collection(db, "goals"));
+    const container = $('goalsContainer');
+    
+    container.innerHTML = `
+        <div class="chart-header flex-between">
+            <h3 class="chart-title"><i class="fas fa-bullseye"></i> Savings Goals</h3>
+            <button class="btn btn-primary" onclick="openModal('goal')"><i class="fas fa-plus"></i>Add Goal</button>
         </div>
-
-        <div class="progress-bar">
-          <div class="progress-fill" style="width:${percent}%"></div>
-        </div>
-
-        <div class="action-buttons" style="margin-top:10px;">
-          <button class="action-btn btn-edit" onclick="editGoal('${docItem.id}', '${g.name}', ${g.target}, ${g.saved})">Edit</button>
-          <button class="action-btn btn-delete" onclick="deleteGoal('${docItem.id}')">Delete</button>
-        </div>
-      </div>
     `;
-  });
+    
+    snapshot.forEach(d => {
+        const g = d.data();
+        const percent = Math.round((g.saved / g.target) * 100);
+        container.innerHTML += `
+            <div class="goal-item">
+                <div class="goal-header flex-between">
+                    <div class="goal-name"><i class="fas fa-flag" style="color:#667eea"></i>${g.name}</div>
+                    <div class="goal-amount">${formatCurrency(g.saved)} / ${formatCurrency(g.target)}</div>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div>
+                <div class="action-buttons" style="margin-top:10px">
+                    <button class="action-btn btn-edit" onclick="editGoal('${d.id}','${g.name}',${g.target},${g.saved})">Edit</button>
+                    <button class="action-btn btn-delete" onclick="deleteGoal('${d.id}')">Delete</button>
+                </div>
+            </div>
+        `;
+    });
 }
 
-window.addGoalHandler = async function(e) {
-  e.preventDefault();
+// ==================== EVENT HANDLERS ====================
+window.openModal = type => $(`${type}Modal`).classList.add('active');
+window.closeModal = type => $(`${type}Modal`).classList.remove('active');
 
-  const name = goalName.value;
-  const target = parseInt(goalTarget.value);
-  const saved = parseInt(goalSaved.value);
-
-  await addDoc(collection(db, "goals"), { name, target, saved });
-
-  closeGoalModal();
-  showToast("🎯 Goal Added!");
-  loadGoals();
+window.showToast = msg => {
+    const toast = $('toast');
+    toast.querySelector('.toast-message').textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 3000);
 };
 
-window.deleteGoal = async function(id) {
-  await deleteDoc(doc(db, "goals", id));
-  showToast("Deleted goal");
-  loadGoals();
+window.deleteTx = async id => {
+    await deleteDoc(doc(db, "transactions", id));
+    showToast("🗑️ Deleted!");
+    loadTransactions();
+    updateDashboard();
 };
 
-window.editGoal = async function(id, name, target, saved) {
-  const newName = prompt("Goal Name:", name);
-  const newTarget = prompt("Target:", target);
-  const newSaved = prompt("Saved:", saved);
-
-  if (!newName) return;
-
-  await updateDoc(doc(db, "goals", id), {
-    name: newName,
-    target: parseInt(newTarget),
-    saved: parseInt(newSaved)
-  });
-
-  showToast("Updated!");
-  loadGoals();
+window.deleteGoal = async id => {
+    await deleteDoc(doc(db, "goals", id));
+    showToast("🗑️ Goal Deleted!");
+    loadGoals();
 };
 
-
-
-// ---------------- INIT ----------------
-
-window.onload = function () {
-  loadTransactions();
-  updateDashboard();
-  loadGoals();
+window.editGoal = async (id, name, target, saved) => {
+    const newName = prompt("Goal Name:", name);
+    if (!newName) return;
+    const newTarget = prompt("Target:", target);
+    const newSaved = prompt("Saved:", saved);
+    
+    await updateDoc(doc(db, "goals", id), {
+        name: newName,
+        target: parseInt(newTarget),
+        saved: parseInt(newSaved)
+    });
+    showToast("✅ Updated!");
+    loadGoals();
 };
 
+window.exportReport = () => showToast("📊 Export coming soon!");
+
+// Form Submissions
+$('transactionForm').onsubmit = async e => {
+    e.preventDefault();
+    await addDoc(collection(db, "transactions"), {
+        date: $('txDate').value,
+        description: $('txDesc').value,
+        category: $('txCategory').value,
+        type: $('txType').value,
+        amount: parseInt($('txAmount').value)
+    });
+    closeModal('transaction');
+    $('transactionForm').reset();
+    showToast("✅ Transaction Added!");
+    loadTransactions();
+    updateDashboard();
+};
+
+$('goalForm').onsubmit = async e => {
+    e.preventDefault();
+    await addDoc(collection(db, "goals"), {
+        name: $('goalName').value,
+        target: parseInt($('goalTarget').value),
+        saved: parseInt($('goalSaved').value)
+    });
+    closeModal('goal');
+    $('goalForm').reset();
+    showToast("🎯 Goal Added!");
+    loadGoals();
+};
+
+// Filters
+$('searchInput').oninput = filterTable;
+$('categoryFilter').onchange = filterTable;
+$('typeFilter').onchange = filterTable;
+
+function filterTable() {
+    const search = $('searchInput').value.toLowerCase();
+    const cat = $('categoryFilter').value;
+    const type = $('typeFilter').value;
+    
+    document.querySelectorAll('#transactionBody tr').forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const rowCat = row.cells[2].textContent;
+        const rowType = row.cells[3].textContent.trim().toLowerCase();
+        
+        const matchSearch = text.includes(search);
+        const matchCat = cat === 'all' || rowCat === cat;
+        const matchType = type === 'all' || rowType === type;
+        
+        row.style.display = matchSearch && matchCat && matchType ? '' : 'none';
+    });
+}
+
+// Time Filter
+document.querySelector('.time-filter').onclick = e => {
+    if (e.target.tagName !== 'BUTTON') return;
+    document.querySelectorAll('.time-filter button').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    // Chart update logic here
+};
+
+// ==================== CHARTS ====================
+function initCharts() {
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { labels: { color: '#a0a0b8', font: { family: 'Inter' } } } }
+    };
+
+    new Chart($('incomeExpenseChart'), {
+        type: 'bar',
+        data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [
+                { label: 'Income', data: [12000, 8000, 15000, 10000, 18000, 5000, 8000], backgroundColor: 'rgba(79, 172, 254, 0.8)', borderRadius: 8 },
+                { label: 'Expenses', data: [8000, 6000, 10000, 7500, 12000, 9000, 5500], backgroundColor: 'rgba(250, 112, 154, 0.8)', borderRadius: 8 }
+            ]
+        },
+        options: { ...chartOptions, scales: { x: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+    });
+
+    new Chart($('expenseBreakdownChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['Food', 'Rent', 'Transport', 'Bills', 'Entertainment', 'Healthcare'],
+            datasets: [{ data: [12500, 20000, 2800, 5500, 5600, 2000], backgroundColor: ['#fa709a', '#667eea', '#fcb69f', '#a8edea', '#f093fb', '#4facfe'], borderWidth: 0 }]
+        },
+        options: { ...chartOptions, cutout: '65%' }
+    });
+}
+
+// ==================== INIT ====================
+window.onload = () => {
+    renderKPIs();
+    renderInsights();
+    renderBudgets();
+    loadTransactions();
+    updateDashboard();
+    loadGoals();
+    initCharts();
+};
 </script>
-
 </body>
 </html>
