@@ -1470,11 +1470,11 @@
     </div>
 
 
-
 <script type="module">
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
 import { 
-  getFirestore, collection, addDoc, getDocs, deleteDoc, doc 
+  getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc 
 } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -1489,57 +1489,69 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// MODAL
-window.openAddTransactionModal = function () {
+
+
+// ---------------- MODALS ----------------
+
+window.openAddTransactionModal = () => {
   document.getElementById("transactionModal").classList.add("active");
 };
 
-window.closeModal = function () {
+window.closeModal = () => {
   document.getElementById("transactionModal").classList.remove("active");
 };
 
-// TOAST
-window.showToast = function (msg) {
+window.openGoalModal = () => {
+  document.getElementById("goalModal").classList.add("active");
+};
+
+window.closeGoalModal = () => {
+  document.getElementById("goalModal").classList.remove("active");
+};
+
+
+
+// ---------------- TOAST ----------------
+
+window.showToast = (msg) => {
   const toast = document.getElementById("toast");
   toast.querySelector(".toast-message").innerText = msg;
   toast.classList.add("show");
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-  }, 3000);
+  setTimeout(() => toast.classList.remove("show"), 3000);
 };
 
-// ADD
+
+
+// ---------------- TRANSACTIONS ----------------
+
 window.addTransaction = async function (event) {
   event.preventDefault();
 
-  const date = document.getElementById("date").value;
-  const description = document.getElementById("description").value;
-  const category = document.getElementById("category").value;
-  const type = document.getElementById("type").value;
-  const amount = parseInt(document.getElementById("amount").value);
+  const t = {
+    date: date.value,
+    description: description.value,
+    category: category.value,
+    type: type.value,
+    amount: parseInt(amount.value)
+  };
 
-  await addDoc(collection(db, "transactions"), {
-    date,
-    description,
-    category,
-    type,
-    amount
-  });
+  await addDoc(collection(db, "transactions"), t);
 
   closeModal();
   showToast("✅ Transaction Added!");
+
   loadTransactions();
+  updateDashboard();
 };
 
-// LOAD
 async function loadTransactions() {
   const snapshot = await getDocs(collection(db, "transactions"));
   const tbody = document.getElementById("transactionBody");
 
   tbody.innerHTML = "";
 
-  snapshot.forEach((docItem) => {
+  snapshot.forEach(docItem => {
     const t = docItem.data();
 
     tbody.innerHTML += `
@@ -1565,17 +1577,125 @@ async function loadTransactions() {
   });
 }
 
-// DELETE
 window.deleteTransaction = async function (id) {
   await deleteDoc(doc(db, "transactions", id));
   showToast("🗑️ Deleted!");
+
   loadTransactions();
+  updateDashboard();
 };
 
-// INIT
+
+
+// ---------------- DASHBOARD CALC ----------------
+
+async function updateDashboard() {
+  const snapshot = await getDocs(collection(db, "transactions"));
+
+  let income = 0;
+  let expense = 0;
+
+  snapshot.forEach(doc => {
+    const t = doc.data();
+    if (t.type === "income") income += t.amount;
+    else expense += t.amount;
+  });
+
+  const savings = income - expense;
+
+  document.getElementById("monthlyIncome").innerText = `₹${income}`;
+  document.getElementById("monthlyExpenses").innerText = `₹${expense}`;
+  document.getElementById("monthlySavings").innerText = `₹${savings}`;
+  document.getElementById("totalBalance").innerText = `₹${savings}`;
+}
+
+
+
+// ---------------- GOALS ----------------
+
+async function loadGoals() {
+  const snapshot = await getDocs(collection(db, "goals"));
+  const container = document.getElementById("goalsContainer");
+
+  container.innerHTML = `
+    <div class="chart-header">
+      <h3 class="chart-title"><i class="fas fa-bullseye"></i> Savings Goals</h3>
+      <button class="btn btn-primary" onclick="openGoalModal()">+ Add Goal</button>
+    </div>
+  `;
+
+  snapshot.forEach(docItem => {
+    const g = docItem.data();
+    const percent = (g.saved / g.target) * 100;
+
+    container.innerHTML += `
+      <div class="goal-item">
+        <div class="goal-header">
+          <div class="goal-name">${g.name}</div>
+          <div class="goal-amount">₹${g.saved} / ₹${g.target}</div>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress-fill" style="width:${percent}%"></div>
+        </div>
+
+        <div class="action-buttons" style="margin-top:10px;">
+          <button class="action-btn btn-edit" onclick="editGoal('${docItem.id}', '${g.name}', ${g.target}, ${g.saved})">Edit</button>
+          <button class="action-btn btn-delete" onclick="deleteGoal('${docItem.id}')">Delete</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+window.addGoalHandler = async function(e) {
+  e.preventDefault();
+
+  const name = goalName.value;
+  const target = parseInt(goalTarget.value);
+  const saved = parseInt(goalSaved.value);
+
+  await addDoc(collection(db, "goals"), { name, target, saved });
+
+  closeGoalModal();
+  showToast("🎯 Goal Added!");
+  loadGoals();
+};
+
+window.deleteGoal = async function(id) {
+  await deleteDoc(doc(db, "goals", id));
+  showToast("Deleted goal");
+  loadGoals();
+};
+
+window.editGoal = async function(id, name, target, saved) {
+  const newName = prompt("Goal Name:", name);
+  const newTarget = prompt("Target:", target);
+  const newSaved = prompt("Saved:", saved);
+
+  if (!newName) return;
+
+  await updateDoc(doc(db, "goals", id), {
+    name: newName,
+    target: parseInt(newTarget),
+    saved: parseInt(newSaved)
+  });
+
+  showToast("Updated!");
+  loadGoals();
+};
+
+
+
+// ---------------- INIT ----------------
+
 window.onload = function () {
   loadTransactions();
+  updateDashboard();
+  loadGoals();
 };
+
 </script>
+
 </body>
 </html>
