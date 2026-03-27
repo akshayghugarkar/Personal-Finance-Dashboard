@@ -81,10 +81,11 @@
 
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
         .flex-center { display: flex; align-items: center; justify-content: center; }
-        .flex-gap { display: flex; gap: 15px; flex-wrap: wrap; }
+        .flex-gap { display: flex; gap: 15px; flex-wrap: wrap; align-items: center; }
 
         .dashboard { max-width: 1600px; margin: 0 auto; padding: 30px; }
 
+        /* Header */
         .header {
             padding: 25px 40px;
             margin-bottom: 40px;
@@ -101,6 +102,66 @@
         }
 
         .header h1 i { font-size: 36px; }
+
+        /* Month Selector */
+        .month-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 15px;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+        }
+
+        .month-selector button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 8px;
+            transition: var(--transition);
+            font-size: 16px;
+        }
+
+        .month-selector button:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .month-selector .current-month {
+            font: 600 16px 'Inter', sans-serif;
+            color: var(--text-primary);
+            min-width: 150px;
+            text-align: center;
+        }
+
+        .month-selector input[type="month"] {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font: 600 16px 'Inter', sans-serif;
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .month-selector input[type="month"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+            cursor: pointer;
+        }
+
+        /* Month Badge */
+        .month-badge {
+            background: var(--grad-primary);
+            color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font: 600 12px 'Inter', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
 
         .btn {
             padding: 12px 28px;
@@ -147,6 +208,11 @@
 
         .btn-secondary:hover { background: rgba(255, 255, 255, 0.1); }
 
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+
         .action-btn {
             padding: 6px 12px;
             border: none;
@@ -180,6 +246,8 @@
             max-width: 500px;
             box-shadow: var(--shadow), var(--glow);
             animation: slideUp 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
         .modal-header { margin-bottom: 30px; }
@@ -461,7 +529,7 @@
             animation: fadeInUp 1.4s ease;
         }
 
-        .table-controls { margin-bottom: 25px; gap: 15px; }
+        .table-controls { margin-bottom: 25px; gap: 15px; flex-wrap: wrap; }
 
         .search-box {
             position: relative;
@@ -601,15 +669,70 @@
             opacity: 0.5;
         }
 
+        /* Month History */
+        .history-section {
+            margin-bottom: 40px;
+        }
+
+        .month-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .month-card {
+            padding: 20px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .month-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(102, 126, 234, 0.5);
+        }
+
+        .month-card.active {
+            border-color: #667eea;
+            box-shadow: var(--glow);
+        }
+
+        .month-card h4 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .month-card .amount {
+            font: 700 20px 'Inter', sans-serif;
+        }
+
+        .month-card .amount.positive { color: #00f2fe; }
+        .month-card .amount.negative { color: #fee140; }
+
+        /* Summary Stats */
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 14px;
+        }
+
+        .summary-row:last-child { border: none; }
+        .summary-row .label { color: var(--text-secondary); }
+        .summary-row .value { font-weight: 600; }
+
         @media (max-width: 768px) {
             .dashboard { padding: 20px 15px; }
-            .header { padding: 20px; }
+            .header { padding: 20px; flex-direction: column; gap: 20px; }
             .header h1 { font-size: 24px; }
             .kpi-grid, .chart-grid, .budget-grid { grid-template-columns: 1fr; }
             .kpi-value { font-size: 28px; }
             table { font-size: 12px; }
             th, td { padding: 12px 10px; }
             .modal-content { width: 95%; padding: 25px; }
+            .month-selector { width: 100%; justify-content: center; }
         }
 
         ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -623,11 +746,30 @@
         <!-- Header -->
         <header class="header glass flex-between">
             <h1 class="gradient-text"><i class="fas fa-chart-line gradient-text"></i>Personal Finance Dashboard</h1>
+            
+            <!-- Month Selector -->
+            <div class="month-selector">
+                <button onclick="changeMonth(-1)" title="Previous Month"><i class="fas fa-chevron-left"></i></button>
+                <input type="month" id="monthPicker" onchange="onMonthChange()">
+                <button onclick="changeMonth(1)" title="Next Month"><i class="fas fa-chevron-right"></i></button>
+                <button onclick="goToCurrentMonth()" class="btn btn-sm btn-secondary" title="Go to Current Month">
+                    <i class="fas fa-calendar-day"></i> Today
+                </button>
+            </div>
+            
             <div class="flex-gap">
-                <button class="btn btn-secondary" onclick="exportReport()"><i class="fas fa-download"></i>Export Report</button>
+                <button class="btn btn-secondary" onclick="exportReport()"><i class="fas fa-download"></i>Export</button>
                 <button class="btn btn-primary" onclick="openModal('transaction')"><i class="fas fa-plus"></i>Add Transaction</button>
             </div>
         </header>
+
+        <!-- Current Month Display -->
+        <div style="text-align:center;margin-bottom:30px;">
+            <span class="month-badge" id="currentMonthBadge">
+                <i class="fas fa-calendar-alt"></i>
+                <span id="currentMonthDisplay">January 2025</span>
+            </span>
+        </div>
 
         <!-- KPI Cards -->
         <section class="kpi-grid" id="kpiGrid"></section>
@@ -636,14 +778,9 @@
         <section class="chart-grid">
             <div class="chart-container glass">
                 <div class="chart-header flex-between">
-                    <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Income vs Expenses</h3>
-                    <div class="time-filter">
-                        <button class="active" data-period="weekly">Weekly</button>
-                        <button data-period="monthly">Monthly</button>
-                        <button data-period="yearly">Yearly</button>
-                    </div>
+                    <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Daily Transactions</h3>
                 </div>
-                <canvas id="incomeExpenseChart"></canvas>
+                <canvas id="dailyChart"></canvas>
             </div>
             <div class="chart-container glass">
                 <div class="chart-header flex-between">
@@ -651,6 +788,17 @@
                 </div>
                 <canvas id="expenseBreakdownChart"></canvas>
             </div>
+        </section>
+
+        <!-- Month History -->
+        <section class="history-section chart-container glass">
+            <div class="chart-header flex-between">
+                <h3 class="chart-title"><i class="fas fa-history"></i> Monthly History</h3>
+                <button class="btn btn-sm btn-secondary" onclick="loadAllMonthsHistory()">
+                    <i class="fas fa-sync-alt"></i> Refresh
+                </button>
+            </div>
+            <div class="month-cards" id="monthHistory"></div>
         </section>
 
         <!-- Insights -->
@@ -668,6 +816,7 @@
         <section class="chart-container glass" style="margin-bottom:30px">
             <div class="chart-header flex-between">
                 <h3 class="chart-title"><i class="fas fa-calculator"></i> Budget Tracking</h3>
+                <span class="month-badge" id="budgetMonthBadge"><i class="fas fa-calendar"></i> <span id="budgetMonth"></span></span>
             </div>
             <div class="budget-grid" id="budgetGrid"></div>
         </section>
@@ -675,7 +824,8 @@
         <!-- Transactions -->
         <section class="table-container glass">
             <div class="chart-header flex-between">
-                <h3 class="chart-title"><i class="fas fa-list"></i> Recent Transactions</h3>
+                <h3 class="chart-title"><i class="fas fa-list"></i> Transactions</h3>
+                <span class="month-badge"><i class="fas fa-filter"></i> <span id="tableMonth"></span></span>
             </div>
             <div class="table-controls flex-between">
                 <div class="search-box">
@@ -783,7 +933,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 // Firebase Config
 const app = initializeApp({
@@ -798,22 +948,13 @@ const app = initializeApp({
 const db = getFirestore(app);
 const $ = id => document.getElementById(id);
 
+// ==================== GLOBAL STATE ====================
+let selectedMonth = new Date().toISOString().slice(0, 7); // Format: "2025-01"
+let allTransactions = [];
+let expenseChart = null;
+let dailyChart = null;
+
 // ==================== DATA ====================
-const kpiData = [
-    { id: 'totalBalance', title: 'Total Balance', icon: 'fa-wallet', class: 'icon-balance', trend: 'up', percent: '12.5%' },
-    { id: 'monthlyIncome', title: 'Monthly Income', icon: 'fa-arrow-down', class: 'icon-income', trend: 'up', percent: '5.2%' },
-    { id: 'monthlyExpenses', title: 'Monthly Expenses', icon: 'fa-arrow-up', class: 'icon-expense', trend: 'down', percent: '3.1%' },
-    { id: 'monthlySavings', title: 'Monthly Savings', icon: 'fa-piggy-bank', class: 'icon-savings', isSavings: true }
-];
-
-const insightsData = [
-    { icon: 'fa-exclamation-triangle', bg: 'var(--grad-warning)', color: '#8b4513', title: 'Food Spending Alert', text: 'Monitor your food expenses to stay within budget. Consider meal planning to save more.' },
-    { icon: 'fa-gas-pump', bg: 'var(--grad-orange)', color: 'white', title: 'Petrol Tracker', text: 'Keep track of your petrol expenses. Budget: ₹2,000/month.' },
-    { icon: 'fa-dumbbell', bg: 'var(--grad-purple)', color: 'white', title: 'Gym & Fitness', text: 'Total fitness budget: ₹5,000 (Gym ₹1,000 + Protein ₹2,000 + Diet ₹2,000). Stay consistent! 💪' },
-    { icon: 'fa-chart-line', bg: 'var(--grad-primary)', color: 'white', title: 'Smart Tip', text: 'Track all expenses regularly to understand your spending patterns better!' }
-];
-
-// ✅ BUDGET DATA - Only contains budget limits (spent will be calculated from transactions)
 const budgetData = [
     { name: 'Food', icon: 'fa-utensils', bg: 'var(--grad-danger)', budget: 15000 },
     { name: 'Rent', icon: 'fa-home', bg: 'var(--grad-primary)', budget: 4500 },
@@ -826,28 +967,136 @@ const budgetData = [
     { name: 'Gym Diet', icon: 'fa-apple-alt', bg: 'var(--grad-dark)', budget: 2000 }
 ];
 
-// ==================== HELPER ====================
+const colorMap = {
+    'Food': '#fa709a', 'Rent': '#667eea', 'Petrol': '#f5af19',
+    'Bills': '#a8edea', 'Entertainment': '#f093fb', 'Healthcare': '#4facfe',
+    'Gym': '#8E2DE2', 'Gym Protein': '#38ef7d', 'Gym Diet': '#30cfd0',
+    'Other': '#a0a0b8', 'Salary': '#00f2fe', 'Freelance': '#00f2fe'
+};
+
+// ==================== HELPERS ====================
 const formatCurrency = n => `₹${n.toLocaleString('en-IN')}`;
 
-// ==================== RENDER FUNCTIONS ====================
-function renderKPIs() {
+const formatMonthYear = (monthStr) => {
+    const [year, month] = monthStr.split('-');
+    const date = new Date(year, month - 1);
+    return date.toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
+};
+
+const getMonthFromDate = (dateStr) => dateStr.slice(0, 7); // "2025-01-15" -> "2025-01"
+
+const getDaysInMonth = (monthStr) => {
+    const [year, month] = monthStr.split('-').map(Number);
+    return new Date(year, month, 0).getDate();
+};
+
+// ==================== MONTH NAVIGATION ====================
+window.changeMonth = (delta) => {
+    const [year, month] = selectedMonth.split('-').map(Number);
+    const newDate = new Date(year, month - 1 + delta, 1);
+    selectedMonth = newDate.toISOString().slice(0, 7);
+    $('monthPicker').value = selectedMonth;
+    refreshAll();
+};
+
+window.onMonthChange = () => {
+    selectedMonth = $('monthPicker').value;
+    refreshAll();
+};
+
+window.goToCurrentMonth = () => {
+    selectedMonth = new Date().toISOString().slice(0, 7);
+    $('monthPicker').value = selectedMonth;
+    refreshAll();
+    showToast("📅 Switched to current month");
+};
+
+window.selectMonth = (monthStr) => {
+    selectedMonth = monthStr;
+    $('monthPicker').value = selectedMonth;
+    refreshAll();
+};
+
+// ==================== RENDER KPIs ====================
+function renderKPIs(income, expense, prevIncome, prevExpense) {
+    const savings = income - expense;
+    const rate = income > 0 ? Math.round((savings / income) * 100) : 0;
+    
+    // Calculate trends
+    const incomeTrend = prevIncome > 0 ? Math.round(((income - prevIncome) / prevIncome) * 100) : 0;
+    const expenseTrend = prevExpense > 0 ? Math.round(((expense - prevExpense) / prevExpense) * 100) : 0;
+    
+    const kpiData = [
+        { 
+            id: 'totalBalance', title: 'Total Balance', icon: 'fa-wallet', class: 'icon-balance',
+            value: formatCurrency(savings),
+            subtitle: savings >= 0 ? '💰 Healthy Balance' : '⚠️ Negative Balance'
+        },
+        { 
+            id: 'monthlyIncome', title: 'Monthly Income', icon: 'fa-arrow-down', class: 'icon-income',
+            value: formatCurrency(income),
+            trend: incomeTrend >= 0 ? 'up' : 'down',
+            percent: `${Math.abs(incomeTrend)}%`
+        },
+        { 
+            id: 'monthlyExpenses', title: 'Monthly Expenses', icon: 'fa-arrow-up', class: 'icon-expense',
+            value: formatCurrency(expense),
+            trend: expenseTrend <= 0 ? 'up' : 'down', // Lower expense is good
+            percent: `${Math.abs(expenseTrend)}%`
+        },
+        { 
+            id: 'monthlySavings', title: 'Monthly Savings', icon: 'fa-piggy-bank', class: 'icon-savings',
+            value: formatCurrency(savings),
+            subtitle: `Savings Rate: <strong>${rate}%</strong>`
+        }
+    ];
+
     $('kpiGrid').innerHTML = kpiData.map(k => `
         <div class="kpi-card glass">
             <div class="kpi-header flex-between">
                 <div class="kpi-title">${k.title}</div>
                 <div class="kpi-icon ${k.class} flex-center"><i class="fas ${k.icon}"></i></div>
             </div>
-            <div class="kpi-value" id="${k.id}">₹0</div>
+            <div class="kpi-value">${k.value}</div>
             <div class="kpi-subtitle">
-                ${k.isSavings ? '<span>Savings Rate: <strong id="savingsRate">0%</strong></span>' : 
-                `<span class="trend-${k.trend}"><i class="fas fa-arrow-${k.trend}"></i> ${k.percent}</span><span>from last month</span>`}
+                ${k.subtitle ? `<span>${k.subtitle}</span>` : 
+                `<span class="trend-${k.trend}"><i class="fas fa-arrow-${k.trend}"></i> ${k.percent}</span><span>vs last month</span>`}
             </div>
         </div>
     `).join('');
 }
 
-function renderInsights() {
-    $('insightsContainer').innerHTML = insightsData.map(i => `
+// ==================== RENDER INSIGHTS ====================
+function renderInsights(monthlyData) {
+    const { income, expense, spentByCategory } = monthlyData;
+    const savings = income - expense;
+    const topCategory = Object.entries(spentByCategory).sort((a, b) => b[1] - a[1])[0];
+    
+    const insights = [
+        {
+            icon: topCategory ? 'fa-chart-bar' : 'fa-info-circle',
+            bg: 'var(--grad-warning)',
+            color: '#8b4513',
+            title: topCategory ? `Top Expense: ${topCategory[0]}` : 'No Expenses Yet',
+            text: topCategory ? `You spent ${formatCurrency(topCategory[1])} on ${topCategory[0]} this month.` : 'Start tracking your expenses to get insights!'
+        },
+        {
+            icon: savings >= 0 ? 'fa-thumbs-up' : 'fa-exclamation-triangle',
+            bg: savings >= 0 ? 'var(--grad-success)' : 'var(--grad-danger)',
+            color: 'white',
+            title: savings >= 0 ? 'Great Savings!' : 'Overspending Alert!',
+            text: savings >= 0 ? `You saved ${formatCurrency(savings)} this month. Keep it up! 💪` : `You're ${formatCurrency(Math.abs(savings))} over budget. Review your expenses.`
+        },
+        {
+            icon: 'fa-lightbulb',
+            bg: 'var(--grad-primary)',
+            color: 'white',
+            title: 'Smart Tip',
+            text: income > 0 ? `Your savings rate is ${Math.round((savings/income)*100)}%. Aim for at least 20%!` : 'Add your income to track savings rate.'
+        }
+    ];
+    
+    $('insightsContainer').innerHTML = insights.map(i => `
         <div class="insight-item">
             <div class="insight-icon flex-center" style="background:${i.bg}">
                 <i class="fas ${i.icon}" style="color:${i.color}"></i>
@@ -857,20 +1106,10 @@ function renderInsights() {
     `).join('');
 }
 
-// ✅ DYNAMIC BUDGET RENDERING - Calculates spent from Firebase transactions
-async function renderBudgets() {
-    const snapshot = await getDocs(collection(db, "transactions"));
+// ==================== RENDER BUDGETS ====================
+function renderBudgets(spentByCategory) {
+    $('budgetMonth').textContent = formatMonthYear(selectedMonth);
     
-    // Calculate spent amount per category from transactions
-    const spentByCategory = {};
-    snapshot.forEach(d => {
-        const t = d.data();
-        if (t.type === 'expense') {
-            spentByCategory[t.category] = (spentByCategory[t.category] || 0) + t.amount;
-        }
-    });
-    
-    // Render budget cards with dynamic spent amounts
     $('budgetGrid').innerHTML = budgetData.map(b => {
         const spent = spentByCategory[b.name] || 0;
         const percent = b.budget > 0 ? Math.round((spent / b.budget) * 100) : 0;
@@ -903,112 +1142,187 @@ async function renderBudgets() {
     }).join('');
 }
 
-// ✅ DYNAMIC PIE CHART - Updates based on actual transactions
-let expenseChart = null;
-
-async function updateExpenseChart() {
+// ==================== LOAD & FILTER TRANSACTIONS ====================
+async function loadAllTransactions() {
     const snapshot = await getDocs(collection(db, "transactions"));
-    
-    // Calculate spent per category
-    const spentByCategory = {};
-    snapshot.forEach(d => {
-        const t = d.data();
-        if (t.type === 'expense') {
-            spentByCategory[t.category] = (spentByCategory[t.category] || 0) + t.amount;
-        }
-    });
-    
-    const categories = Object.keys(spentByCategory);
-    const amounts = Object.values(spentByCategory);
-    
-    const colorMap = {
-        'Food': '#fa709a',
-        'Rent': '#667eea',
-        'Petrol': '#f5af19',
-        'Bills': '#a8edea',
-        'Entertainment': '#f093fb',
-        'Healthcare': '#4facfe',
-        'Gym': '#8E2DE2',
-        'Gym Protein': '#38ef7d',
-        'Gym Diet': '#30cfd0',
-        'Other': '#a0a0b8',
-        'Salary': '#00f2fe',
-        'Freelance': '#00f2fe'
-    };
-    
-    const colors = categories.map(cat => colorMap[cat] || '#a0a0b8');
-    
-    if (expenseChart) {
-        expenseChart.data.labels = categories;
-        expenseChart.data.datasets[0].data = amounts;
-        expenseChart.data.datasets[0].backgroundColor = colors;
-        expenseChart.update();
-    }
+    allTransactions = [];
+    snapshot.forEach(d => allTransactions.push({ id: d.id, ...d.data() }));
+    allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
-// ==================== FIREBASE FUNCTIONS ====================
-async function loadTransactions() {
-    const snapshot = await getDocs(collection(db, "transactions"));
-    const tbody = $('transactionBody');
+function getMonthlyTransactions(monthStr) {
+    return allTransactions.filter(t => getMonthFromDate(t.date) === monthStr);
+}
+
+function calculateMonthlyData(transactions) {
+    let income = 0, expense = 0;
+    const spentByCategory = {};
+    const dailyData = {};
     
-    if (snapshot.empty) {
+    transactions.forEach(t => {
+        if (t.type === 'income') {
+            income += t.amount;
+        } else {
+            expense += t.amount;
+            spentByCategory[t.category] = (spentByCategory[t.category] || 0) + t.amount;
+        }
+        
+        // Daily data
+        const day = parseInt(t.date.split('-')[2]);
+        if (!dailyData[day]) dailyData[day] = { income: 0, expense: 0 };
+        dailyData[day][t.type] += t.amount;
+    });
+    
+    return { income, expense, spentByCategory, dailyData };
+}
+
+// ==================== RENDER TRANSACTIONS TABLE ====================
+function renderTransactions(transactions) {
+    const tbody = $('transactionBody');
+    $('tableMonth').textContent = formatMonthYear(selectedMonth);
+    
+    if (transactions.length === 0) {
         tbody.innerHTML = `
             <tr>
                 <td colspan="6" class="no-data">
                     <i class="fas fa-receipt"></i>
-                    No transactions yet. Add your first transaction!
+                    No transactions for ${formatMonthYear(selectedMonth)}
                 </td>
             </tr>
         `;
         return;
     }
     
-    tbody.innerHTML = '';
+    tbody.innerHTML = transactions.map(t => `
+        <tr>
+            <td>${t.date}</td>
+            <td>${t.description}</td>
+            <td>${t.category}</td>
+            <td><span class="transaction-type type-${t.type}">${t.type}</span></td>
+            <td class="amount-${t.type}">${formatCurrency(t.amount)}</td>
+            <td><button class="action-btn btn-delete" onclick="deleteTx('${t.id}')">Delete</button></td>
+        </tr>
+    `).join('');
+}
+
+// ==================== MONTH HISTORY ====================
+async function loadAllMonthsHistory() {
+    const monthsData = {};
     
-    // Sort by date (newest first)
-    const transactions = [];
-    snapshot.forEach(d => transactions.push({ id: d.id, ...d.data() }));
-    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+    allTransactions.forEach(t => {
+        const month = getMonthFromDate(t.date);
+        if (!monthsData[month]) monthsData[month] = { income: 0, expense: 0 };
+        monthsData[month][t.type] += t.amount;
+    });
     
-    transactions.forEach(t => {
-        tbody.innerHTML += `
-            <tr>
-                <td>${t.date}</td>
-                <td>${t.description}</td>
-                <td>${t.category}</td>
-                <td><span class="transaction-type type-${t.type}">${t.type}</span></td>
-                <td class="amount-${t.type}">${formatCurrency(t.amount)}</td>
-                <td><button class="action-btn btn-delete" onclick="deleteTx('${t.id}')">Delete</button></td>
-            </tr>
+    const sortedMonths = Object.keys(monthsData).sort().reverse();
+    
+    if (sortedMonths.length === 0) {
+        $('monthHistory').innerHTML = `
+            <div class="no-data">
+                <i class="fas fa-calendar-times"></i>
+                No historical data yet. Start adding transactions!
+            </div>
         `;
+        return;
+    }
+    
+    $('monthHistory').innerHTML = sortedMonths.map(month => {
+        const data = monthsData[month];
+        const balance = data.income - data.expense;
+        const isActive = month === selectedMonth;
+        
+        return `
+            <div class="month-card glass ${isActive ? 'active' : ''}" onclick="selectMonth('${month}')">
+                <h4>${formatMonthYear(month)}</h4>
+                <div class="summary-row">
+                    <span class="label">Income</span>
+                    <span class="value" style="color:#00f2fe">${formatCurrency(data.income)}</span>
+                </div>
+                <div class="summary-row">
+                    <span class="label">Expense</span>
+                    <span class="value" style="color:#fee140">${formatCurrency(data.expense)}</span>
+                </div>
+                <div class="amount ${balance >= 0 ? 'positive' : 'negative'}">
+                    ${balance >= 0 ? '+' : ''}${formatCurrency(balance)}
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+// ==================== CHARTS ====================
+function updateCharts(monthlyData) {
+    const { spentByCategory, dailyData } = monthlyData;
+    
+    // Expense Breakdown Chart
+    const categories = Object.keys(spentByCategory);
+    const amounts = Object.values(spentByCategory);
+    const colors = categories.map(cat => colorMap[cat] || '#a0a0b8');
+    
+    if (expenseChart) {
+        if (categories.length > 0) {
+            expenseChart.data.labels = categories;
+            expenseChart.data.datasets[0].data = amounts;
+            expenseChart.data.datasets[0].backgroundColor = colors;
+        } else {
+            expenseChart.data.labels = ['No Expenses'];
+            expenseChart.data.datasets[0].data = [1];
+            expenseChart.data.datasets[0].backgroundColor = ['rgba(160, 160, 184, 0.3)'];
+        }
+        expenseChart.update();
+    }
+    
+    // Daily Chart
+    const daysInMonth = getDaysInMonth(selectedMonth);
+    const dayLabels = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+    const incomeData = dayLabels.map(d => dailyData[d]?.income || 0);
+    const expenseData = dayLabels.map(d => dailyData[d]?.expense || 0);
+    
+    if (dailyChart) {
+        dailyChart.data.labels = dayLabels;
+        dailyChart.data.datasets[0].data = incomeData;
+        dailyChart.data.datasets[1].data = expenseData;
+        dailyChart.update();
+    }
+}
+
+function initCharts() {
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        plugins: { legend: { labels: { color: '#a0a0b8', font: { family: 'Inter' } } } }
+    };
+
+    dailyChart = new Chart($('dailyChart'), {
+        type: 'bar',
+        data: {
+            labels: [],
+            datasets: [
+                { label: 'Income', data: [], backgroundColor: 'rgba(79, 172, 254, 0.8)', borderRadius: 4 },
+                { label: 'Expenses', data: [], backgroundColor: 'rgba(250, 112, 154, 0.8)', borderRadius: 4 }
+            ]
+        },
+        options: { 
+            ...chartOptions, 
+            scales: { 
+                x: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
+                y: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } 
+            } 
+        }
+    });
+
+    expenseChart = new Chart($('expenseBreakdownChart'), {
+        type: 'doughnut',
+        data: {
+            labels: ['No Data'],
+            datasets: [{ data: [1], backgroundColor: ['rgba(160, 160, 184, 0.3)'], borderWidth: 0 }]
+        },
+        options: { ...chartOptions, cutout: '65%' }
     });
 }
 
-async function updateDashboard() {
-    const snapshot = await getDocs(collection(db, "transactions"));
-    let income = 0, expense = 0;
-    
-    snapshot.forEach(d => {
-        const t = d.data();
-        t.type === 'income' ? income += t.amount : expense += t.amount;
-    });
-    
-    const savings = income - expense;
-    const rate = income > 0 ? Math.round((savings / income) * 100) : 0;
-    
-    $('monthlyIncome').textContent = formatCurrency(income);
-    $('monthlyExpenses').textContent = formatCurrency(expense);
-    $('monthlySavings').textContent = formatCurrency(savings);
-    $('totalBalance').textContent = formatCurrency(savings);
-    $('savingsRate').textContent = `${rate}%`;
-    
-    // Update budget tracking
-    await renderBudgets();
-    
-    // Update expense chart
-    await updateExpenseChart();
-}
-
+// ==================== GOALS ====================
 async function loadGoals() {
     const snapshot = await getDocs(collection(db, "goals"));
     const container = $('goalsContainer');
@@ -1021,19 +1335,13 @@ async function loadGoals() {
     `;
     
     if (snapshot.empty) {
-        container.innerHTML += `
-            <div class="no-data">
-                <i class="fas fa-flag-checkered"></i>
-                No goals yet. Set your first savings goal!
-            </div>
-        `;
+        container.innerHTML += `<div class="no-data"><i class="fas fa-flag-checkered"></i>No goals yet. Set your first savings goal!</div>`;
         return;
     }
     
     snapshot.forEach(d => {
         const g = d.data();
         const percent = Math.round((g.saved / g.target) * 100);
-        const status = percent >= 100 ? 'Completed! 🎉' : `${percent}% complete`;
         
         container.innerHTML += `
             <div class="goal-item">
@@ -1043,7 +1351,7 @@ async function loadGoals() {
                 </div>
                 <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(percent, 100)}%"></div></div>
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
-                    <span style="font-size:12px;color:var(--text-secondary)">${status}</span>
+                    <span style="font-size:12px;color:var(--text-secondary)">${percent >= 100 ? 'Completed! 🎉' : `${percent}% complete`}</span>
                     <div class="action-buttons">
                         <button class="action-btn btn-edit" onclick="editGoal('${d.id}','${g.name}',${g.target},${g.saved})">Edit</button>
                         <button class="action-btn btn-delete" onclick="deleteGoal('${d.id}')">Delete</button>
@@ -1052,6 +1360,31 @@ async function loadGoals() {
             </div>
         `;
     });
+}
+
+// ==================== REFRESH ALL DATA ====================
+async function refreshAll() {
+    // Update UI displays
+    $('currentMonthDisplay').textContent = formatMonthYear(selectedMonth);
+    
+    // Get current month's transactions
+    const currentMonthTxns = getMonthlyTransactions(selectedMonth);
+    const currentData = calculateMonthlyData(currentMonthTxns);
+    
+    // Get previous month's data for comparison
+    const [year, month] = selectedMonth.split('-').map(Number);
+    const prevDate = new Date(year, month - 2, 1);
+    const prevMonth = prevDate.toISOString().slice(0, 7);
+    const prevMonthTxns = getMonthlyTransactions(prevMonth);
+    const prevData = calculateMonthlyData(prevMonthTxns);
+    
+    // Render everything
+    renderKPIs(currentData.income, currentData.expense, prevData.income, prevData.expense);
+    renderBudgets(currentData.spentByCategory);
+    renderTransactions(currentMonthTxns);
+    renderInsights(currentData);
+    updateCharts(currentData);
+    loadAllMonthsHistory();
 }
 
 // ==================== EVENT HANDLERS ====================
@@ -1069,8 +1402,8 @@ window.deleteTx = async id => {
     if (!confirm('Delete this transaction?')) return;
     await deleteDoc(doc(db, "transactions", id));
     showToast("🗑️ Transaction Deleted!");
-    loadTransactions();
-    updateDashboard();
+    await loadAllTransactions();
+    refreshAll();
 };
 
 window.deleteGoal = async id => {
@@ -1085,7 +1418,6 @@ window.editGoal = async (id, name, target, saved) => {
     if (!newName) return;
     const newTarget = prompt("Target Amount:", target);
     const newSaved = prompt("Saved Amount:", saved);
-    
     if (!newTarget || !newSaved) return;
     
     await updateDoc(doc(db, "goals", id), {
@@ -1098,45 +1430,49 @@ window.editGoal = async (id, name, target, saved) => {
 };
 
 window.exportReport = () => {
-    // Generate CSV
+    const monthTxns = getMonthlyTransactions(selectedMonth);
     const rows = [['Date', 'Description', 'Category', 'Type', 'Amount']];
-    document.querySelectorAll('#transactionBody tr').forEach(row => {
-        if (row.cells.length >= 5) {
-            rows.push([
-                row.cells[0].textContent,
-                row.cells[1].textContent,
-                row.cells[2].textContent,
-                row.cells[3].textContent.trim(),
-                row.cells[4].textContent
-            ]);
-        }
-    });
+    monthTxns.forEach(t => rows.push([t.date, t.description, t.category, t.type, t.amount]));
     
     const csv = rows.map(r => r.join(',')).join('\n');
     const blob = new Blob([csv], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `finance-report-${new Date().toISOString().split('T')[0]}.csv`;
+    a.download = `finance-report-${selectedMonth}.csv`;
     a.click();
-    showToast("📊 Report Downloaded!");
+    showToast(`📊 Report for ${formatMonthYear(selectedMonth)} downloaded!`);
 };
 
 // Form Submissions
 $('transactionForm').onsubmit = async e => {
     e.preventDefault();
-    await addDoc(collection(db, "transactions"), {
+    
+    const txData = {
         date: $('txDate').value,
         description: $('txDesc').value,
         category: $('txCategory').value,
         type: $('txType').value,
-        amount: parseInt($('txAmount').value)
-    });
+        amount: parseInt($('txAmount').value),
+        createdAt: new Date().toISOString()
+    };
+    
+    await addDoc(collection(db, "transactions"), txData);
     closeModal('transaction');
     $('transactionForm').reset();
+    $('txDate').valueAsDate = new Date();
     showToast("✅ Transaction Added!");
-    loadTransactions();
-    updateDashboard();
+    
+    await loadAllTransactions();
+    
+    // Switch to the month of the new transaction
+    const txMonth = getMonthFromDate(txData.date);
+    if (txMonth !== selectedMonth) {
+        selectedMonth = txMonth;
+        $('monthPicker').value = selectedMonth;
+    }
+    
+    refreshAll();
 };
 
 $('goalForm').onsubmit = async e => {
@@ -1144,7 +1480,8 @@ $('goalForm').onsubmit = async e => {
     await addDoc(collection(db, "goals"), {
         name: $('goalName').value,
         target: parseInt($('goalTarget').value),
-        saved: parseInt($('goalSaved').value)
+        saved: parseInt($('goalSaved').value),
+        createdAt: new Date().toISOString()
     });
     closeModal('goal');
     $('goalForm').reset();
@@ -1163,7 +1500,7 @@ function filterTable() {
     const type = $('typeFilter').value;
     
     document.querySelectorAll('#transactionBody tr').forEach(row => {
-        if (row.cells.length < 5) return; // Skip no-data row
+        if (row.cells.length < 5) return;
         
         const text = row.textContent.toLowerCase();
         const rowCat = row.cells[2].textContent;
@@ -1177,65 +1514,21 @@ function filterTable() {
     });
 }
 
-// Time Filter
-document.querySelector('.time-filter').onclick = e => {
-    if (e.target.tagName !== 'BUTTON') return;
-    document.querySelectorAll('.time-filter button').forEach(b => b.classList.remove('active'));
-    e.target.classList.add('active');
-};
-
-// ==================== CHARTS ====================
-function initCharts() {
-    const chartOptions = {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: { legend: { labels: { color: '#a0a0b8', font: { family: 'Inter' } } } }
-    };
-
-    new Chart($('incomeExpenseChart'), {
-        type: 'bar',
-        data: {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            datasets: [
-                { label: 'Income', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(79, 172, 254, 0.8)', borderRadius: 8 },
-                { label: 'Expenses', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(250, 112, 154, 0.8)', borderRadius: 8 }
-            ]
-        },
-        options: { 
-            ...chartOptions, 
-            scales: { 
-                x: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
-                y: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } 
-            } 
-        }
-    });
-
-    // Expense Breakdown Chart (will be updated dynamically)
-    expenseChart = new Chart($('expenseBreakdownChart'), {
-        type: 'doughnut',
-        data: {
-            labels: ['No Data'],
-            datasets: [{
-                data: [1],
-                backgroundColor: ['rgba(160, 160, 184, 0.3)'],
-                borderWidth: 0
-            }]
-        },
-        options: { ...chartOptions, cutout: '65%' }
-    });
-}
-
 // ==================== INIT ====================
-window.onload = () => {
-    renderKPIs();
-    renderInsights();
+window.onload = async () => {
+    // Set month picker to current month
+    $('monthPicker').value = selectedMonth;
+    $('txDate').valueAsDate = new Date();
+    
+    // Initialize charts
     initCharts();
-    loadTransactions();
-    updateDashboard();
+    
+    // Load all data
+    await loadAllTransactions();
+    refreshAll();
     loadGoals();
     
-    // Set default date to today
-    $('txDate').valueAsDate = new Date();
+    showToast(`📅 Viewing ${formatMonthYear(selectedMonth)}`);
 };
 </script>
 </body>
