@@ -178,6 +178,146 @@
             transform: translateY(-2px);
         }
 
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--shadow), var(--glow);
+            animation: slideUp 0.3s ease;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .modal-header h2 {
+            background: var(--primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 28px;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+            transform: rotate(90deg);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+            font-size: 15px;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: rgba(102, 126, 234, 0.5);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .form-actions button {
+            flex: 1;
+        }
+
         /* KPI Cards with Gradient Borders */
         .kpi-grid {
             display: grid;
@@ -203,7 +343,6 @@
         .kpi-card:nth-child(2) { animation-delay: 0.2s; }
         .kpi-card:nth-child(3) { animation-delay: 0.3s; }
         .kpi-card:nth-child(4) { animation-delay: 0.4s; }
-
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -762,6 +901,84 @@
             color: var(--text-secondary);
         }
 
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            color: white;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            padding: 20px 25px;
+            border-radius: 12px;
+            box-shadow: var(--shadow), var(--glow);
+            display: none;
+            align-items: center;
+            gap: 15px;
+            z-index: 2000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .toast.show {
+            display: flex;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .toast-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .toast-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .toast-message {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
         /* Responsive Design */
         @media (max-width: 768px) {
             .dashboard {
@@ -799,6 +1016,11 @@
             th, td {
                 padding: 12px 10px;
             }
+
+            .modal-content {
+                width: 95%;
+                padding: 25px;
+            }
         }
 
         /* Custom Scrollbar */
@@ -818,14 +1040,8 @@
 
         ::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-        }
-
-        /* Loading Animation */
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-    </style>
+            }
+        </style>
 </head>
 <body>
     <div class="dashboard">
@@ -840,7 +1056,7 @@
                     <i class="fas fa-download"></i>
                     Export Report
                 </button>
-                <button class="btn btn-primary" onclick="addTransaction()">
+                <button class="btn btn-primary" onclick="openAddTransactionModal()">
                     <i class="fas fa-plus"></i>
                     Add Transaction
                 </button>
@@ -1181,6 +1397,7 @@
                         <th>Category</th>
                         <th>Type</th>
                         <th>Amount</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="transactionBody">
@@ -1188,6 +1405,68 @@
                 </tbody>
             </table>
         </div>
+    </div>
+
+    <!-- Add Transaction Modal -->
+    <div id="transactionModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus-circle"></i> Add New Transaction</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <form id="transactionForm" onsubmit="addTransaction(event)">
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" placeholder="e.g., Grocery Shopping" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select id="category" required>
+                        <option value="">Select Category</option>
+                        <option value="Food">Food</option>
+                        <option value="Rent">Rent</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Bills">Bills</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Healthcare">Healthcare</option>
+                        <option value="Salary">Salary</option>
+                        <option value="Freelance">Freelance</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select id="type" required>
+                        <option value="">Select Type</option>
+                        <option value="income">Income</option>
+                        <option value="expense">Expense</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount (₹)</label>
+                    <input type="number" id="amount" placeholder="e.g., 5000" min="1" required>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check"></i>
+                        Add Transaction
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <div class="toast-icon toast-success">
+            <i class="fas fa-check"></i>
+        </div>
+        <div class="toast-message"></div>
     </div>
 
     <script>
@@ -1202,152 +1481,10 @@
             return formatted;
         }
 
-        // Sample Transaction Data
-        const transactions = [
-            { date: '2024-01-15', description: 'Monthly Salary', category: 'Salary', type: 'income', amount: 85000 },
-            { date: '2024-01-14', description: 'Grocery Shopping - DMart', category: 'Food', type: 'expense', amount: 3500 },
-            { date: '2024-01-13', description: 'Electricity Bill', category: 'Bills', type: 'expense', amount: 2200 },
-            { date: '2024-01-12', description: 'Uber Rides', category: 'Transport', type: 'expense', amount: 850 },
-            { date: '2024-01-11', description: 'Movie & Dinner', category: 'Entertainment', type: 'expense', amount: 1800 },
-            { date: '2024-01-10', description: 'Rent Payment', category: 'Rent', type: 'expense', amount: 20000 },
-            { date: '2024-01-09', description: 'Freelance Project', category: 'Freelance', type: 'income', amount: 15000 },
-            { date: '2024-01-08', description: 'Restaurant - Mainland China', category: 'Food', type: 'expense', amount: 2400 },
-            { date: '2024-01-07', description: 'Internet Bill', category: 'Bills', type: 'expense', amount: 1200 },
-            { date: '2024-01-06', description: 'Pharmacy', category: 'Healthcare', type: 'expense', amount: 850 },
-            { date: '2024-01-05', description: 'Metro Card Recharge', category: 'Transport', type: 'expense', amount: 500 },
-            { date: '2024-01-04', description: 'Swiggy Order', category: 'Food', type: 'expense', amount: 650 },
-            { date: '2024-01-03', description: 'Netflix Subscription', category: 'Entertainment', type: 'expense', amount: 649 },
-            { date: '2024-01-02', description: 'Vegetable Market', category: 'Food', type: 'expense', amount: 450 },
-            { date: '2024-01-01', description: 'Doctor Consultation', category: 'Healthcare', type: 'expense', amount: 800 }
-        ];
+        // Load transactions from localStorage or use default
+        let transactions = JSON.parse(localStorage.getItem('transactions')) || [
 
-        // Populate Transactions Table
-        function populateTransactions(data = transactions) {
-            const tbody = document.getElementById('transactionBody');
-            tbody.innerHTML = '';
-            
-            data.forEach(transaction => {
-                const row = tbody.insertRow();
-                row.innerHTML = `
-                    <td>${new Date(transaction.date).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                    <td>${transaction.description}</td>
-                    <td>${transaction.category}</td>
-                    <td><span class="transaction-type type-${transaction.type}">${transaction.type.charAt(0).toUpperCase() + transaction.type.slice(1)}</span></td>
-                    <td class="amount-${transaction.type}">${transaction.type === 'income' ? '+' : '-'}${formatIndianCurrency(transaction.amount)}</td>
-                `;
-            });
-        }
-
-        // Search Transactions
-        function searchTransactions() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = transactions.filter(t => 
-                t.description.toLowerCase().includes(searchTerm) ||
-                t.category.toLowerCase().includes(searchTerm)
-            );
-            populateTransactions(filtered);
-        }
-
-        // Filter Transactions
-        function filterTransactions() {
-            const categoryFilter = document.getElementById('categoryFilter').value;
-            const typeFilter = document.getElementById('typeFilter').value;
-            
-            let filtered = transactions;
-            
-            if (categoryFilter !== 'all') {
-                filtered = filtered.filter(t => t.category === categoryFilter);
-            }
-            
-            if (typeFilter !== 'all') {
-                filtered = filtered.filter(t => t.type === typeFilter);
-            }
-            
-            populateTransactions(filtered);
-        }
-
-        // Income vs Expense Chart
-        let incomeExpenseChart;
-        const incomeExpenseCtx = document.getElementById('incomeExpenseChart').getContext('2d');
-        incomeExpenseChart = new Chart(incomeExpenseCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Income',
-                    data: [85000, 82000, 88000, 85000, 90000, 85000],
-                    backgroundColor: 'rgba(79, 172, 254, 0.8)',
-                    borderColor: 'rgba(79, 172, 254, 1)',
-                    borderWidth: 2,
-                    borderRadius: 10
-                }, {
-                    label: 'Expenses',
-                    data: [54000, 51000, 56000, 52500, 58000, 52500],
-                    backgroundColor: 'rgba(250, 112, 154, 0.8)',
-                    borderColor: 'rgba(250, 112, 154, 1)',
-                    borderWidth: 2,
-                    borderRadius: 10
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20,
-                            color: '#a0a0b8',
-                            font: {
-                                size: 13,
-                                weight: 600
-                            }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(26, 26, 46, 0.9)',
-                        titleColor: '#ffffff',
-                        bodyColor: '#a0a0b8',
-                        borderColor: 'rgba(102, 126, 234, 0.5)',
-                        borderWidth: 1,
-                        padding: 12,
-                        displayColors: true,
-                        callbacks: {
-                            label: function(context) {
-                                return context.dataset.label + ': ' + formatIndianCurrency(context.parsed.y);
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: {
-                            color: 'rgba(255, 255, 255, 0.05)',
-                            drawBorder: false
-                        },
-                        ticks: {
-                            color: '#a0a0b8',
-                            callback: function(value) {
-                                return '₹' + (value/1000) + 'k';
-                            }
-                        }
-                    },
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            color: '#a0a0b8'
-                        }
-                    }
-                }
-            }
-        });
-
-        // Expense Breakdown Chart
+            // Expense Breakdown Chart
         const expenseBreakdownCtx = document.getElementById('expenseBreakdownChart').getContext('2d');
         const expenseBreakdownChart = new Chart(expenseBreakdownCtx, {
             type: 'doughnut',
@@ -1443,17 +1580,33 @@
 
         // Export Report Function
         function exportReport() {
-            alert('Exporting report... This would download a PDF/Excel report with all financial data.');
+            const csvContent = "data:text/csv;charset=utf-8," 
+                + "Date,Description,Category,Type,Amount\n"
+                + transactions.map(t => `${t.date},${t.description},${t.category},${t.type},${t.amount}`).join("\n");
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "transactions.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            showToast('📊 Report exported successfully!');
         }
 
-        // Add Transaction Function
-        function addTransaction() {
-            alert('Opening transaction form... This would open a modal to add a new transaction.');
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('transactionModal');
+            if (event.target == modal) {
+                closeModal();
+            }
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             populateTransactions();
+            updateKPIs();
         });
     </script>
 </body>
