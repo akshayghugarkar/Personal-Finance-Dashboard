@@ -1461,6 +1461,44 @@
         </div>
     </div>
 
+
+    <!-- 🔽 ADD THIS RIGHT AFTER YOUR TRANSACTION MODAL (keep everything else same) -->
+
+<!-- Goal Modal -->
+<div id="goalModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2><i class="fas fa-bullseye"></i> Add Goal</h2>
+            <button class="close-btn" onclick="closeGoalModal()">&times;</button>
+        </div>
+
+        <form onsubmit="addGoalHandler(event)">
+            <div class="form-group">
+                <label>Goal Name</label>
+                <input type="text" id="goalName" placeholder="e.g., Buy Car" required>
+            </div>
+
+            <div class="form-group">
+                <label>Target Amount</label>
+                <input type="number" id="goalTarget" placeholder="e.g., 500000" required>
+            </div>
+
+            <div class="form-group">
+                <label>Saved Amount</label>
+                <input type="number" id="goalSaved" placeholder="e.g., 100000" required>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeGoalModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Save Goal
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+    
     <!-- Toast Notification -->
     <div id="toast" class="toast">
         <div class="toast-icon toast-success">
