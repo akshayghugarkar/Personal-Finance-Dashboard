@@ -1469,145 +1469,113 @@
         <div class="toast-message"></div>
     </div>
 
-    <script>
-        // Indian Number Formatting Function
-        function formatIndianCurrency(amount) {
-            const num = Math.abs(amount);
-            const formatted = num.toLocaleString('en-IN', {
-                maximumFractionDigits: 0,
-                style: 'currency',
-                currency: 'INR'
-            });
-            return formatted;
-        }
 
-        // Load transactions from localStorage or use default
-        let transactions = JSON.parse(localStorage.getItem('transactions')) || [
 
-            // Expense Breakdown Chart
-        const expenseBreakdownCtx = document.getElementById('expenseBreakdownChart').getContext('2d');
-        const expenseBreakdownChart = new Chart(expenseBreakdownCtx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Food', 'Rent', 'Transport', 'Bills', 'Entertainment', 'Healthcare'],
-                datasets: [{
-                    data: [12500, 20000, 2800, 5500, 5600, 2000],
-                    backgroundColor: [
-                        'rgba(250, 112, 154, 0.8)',
-                        'rgba(102, 126, 234, 0.8)',
-                        'rgba(252, 182, 159, 0.8)',
-                        'rgba(168, 237, 234, 0.8)',
-                        'rgba(240, 147, 251, 0.8)',
-                        'rgba(79, 172, 254, 0.8)'
-                    ],
-                    borderColor: 'rgba(26, 26, 46, 1)',
-                    borderWidth: 3
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20,
-                            color: '#a0a0b8',
-                            font: {
-                                size: 13,
-                                weight: 600
-                            },
-                            generateLabels: function(chart) {
-                                const data = chart.data;
-                                return data.labels.map((label, i) => ({
-                                    text: label + ': ' + formatIndianCurrency(data.datasets[0].data[i]),
-                                    fillStyle: data.datasets[0].backgroundColor[i],
-                                    hidden: false,
-                                    index: i
-                                }));
-                            }
-                        }
-                    },
-                    tooltip: {
-                        backgroundColor: 'rgba(26, 26, 46, 0.9)',
-                        titleColor: '#ffffff',
-                        bodyColor: '#a0a0b8',
-                        borderColor: 'rgba(102, 126, 234, 0.5)',
-                        borderWidth: 1,
-                        padding: 12,
-                        callbacks: {
-                            label: function(context) {
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = ((context.parsed / total) * 100).toFixed(1);
-                                return context.label + ': ' + formatIndianCurrency(context.parsed) + ' (' + percentage + '%)';
-                            }
-                        }
-                    }
-                }
-            }
-        });
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
+import { 
+  getFirestore, collection, addDoc, getDocs, deleteDoc, doc 
+} from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
-        // Filter Chart Function
-        function filterChart(period) {
-            document.querySelectorAll('.time-filter button').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            event.target.classList.add('active');
+const firebaseConfig = {
+  apiKey: "AIzaSyBMp881TtdVKp3OYG1Wp4nGc_QuL14Bn2c",
+  authDomain: "personal-finance-dashboa-c6283.firebaseapp.com",
+  projectId: "personal-finance-dashboa-c6283",
+  storageBucket: "personal-finance-dashboa-c6283.firebasestorage.app",
+  messagingSenderId: "1082785921001",
+  appId: "1:1082785921001:web:94da7c3a8f648141fd7d78"
+};
 
-            let newLabels, newIncomeData, newExpenseData;
-            
-            if (period === 'weekly') {
-                newLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-                newIncomeData = [0, 0, 15000, 0, 0, 0, 85000];
-                newExpenseData = [5000, 3500, 8000, 6500, 7500, 12000, 10000];
-            } else if (period === 'monthly') {
-                newLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
-                newIncomeData = [85000, 82000, 88000, 85000, 90000, 85000];
-                newExpenseData = [54000, 51000, 56000, 52500, 58000, 52500];
-            } else {
-                newLabels = ['2019', '2020', '2021', '2022', '2023', '2024'];
-                newIncomeData = [850000, 920000, 1050000, 1150000, 1200000, 510000];
-                newExpenseData = [620000, 680000, 750000, 820000, 890000, 315000];
-            }
-            
-            incomeExpenseChart.data.labels = newLabels;
-            incomeExpenseChart.data.datasets[0].data = newIncomeData;
-            incomeExpenseChart.data.datasets[1].data = newExpenseData;
-            incomeExpenseChart.update();
-        }
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-        // Export Report Function
-        function exportReport() {
-            const csvContent = "data:text/csv;charset=utf-8," 
-                + "Date,Description,Category,Type,Amount\n"
-                + transactions.map(t => `${t.date},${t.description},${t.category},${t.type},${t.amount}`).join("\n");
-            
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "transactions.csv");
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            showToast('📊 Report exported successfully!');
-        }
+// MODAL
+window.openAddTransactionModal = function () {
+  document.getElementById("transactionModal").classList.add("active");
+};
 
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            const modal = document.getElementById('transactionModal');
-            if (event.target == modal) {
-                closeModal();
-            }
-        }
+window.closeModal = function () {
+  document.getElementById("transactionModal").classList.remove("active");
+};
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
-            populateTransactions();
-            updateKPIs();
-        });
-    </script>
+// TOAST
+window.showToast = function (msg) {
+  const toast = document.getElementById("toast");
+  toast.querySelector(".toast-message").innerText = msg;
+  toast.classList.add("show");
+
+  setTimeout(() => {
+    toast.classList.remove("show");
+  }, 3000);
+};
+
+// ADD
+window.addTransaction = async function (event) {
+  event.preventDefault();
+
+  const date = document.getElementById("date").value;
+  const description = document.getElementById("description").value;
+  const category = document.getElementById("category").value;
+  const type = document.getElementById("type").value;
+  const amount = parseInt(document.getElementById("amount").value);
+
+  await addDoc(collection(db, "transactions"), {
+    date,
+    description,
+    category,
+    type,
+    amount
+  });
+
+  closeModal();
+  showToast("✅ Transaction Added!");
+  loadTransactions();
+};
+
+// LOAD
+async function loadTransactions() {
+  const snapshot = await getDocs(collection(db, "transactions"));
+  const tbody = document.getElementById("transactionBody");
+
+  tbody.innerHTML = "";
+
+  snapshot.forEach((docItem) => {
+    const t = docItem.data();
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${t.date}</td>
+        <td>${t.description}</td>
+        <td>${t.category}</td>
+        <td>
+          <span class="transaction-type ${t.type === 'income' ? 'type-income' : 'type-expense'}">
+            ${t.type}
+          </span>
+        </td>
+        <td class="${t.type === 'income' ? 'amount-income' : 'amount-expense'}">
+          ₹${t.amount}
+        </td>
+        <td>
+          <button class="action-btn btn-delete" onclick="deleteTransaction('${docItem.id}')">
+            Delete
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// DELETE
+window.deleteTransaction = async function (id) {
+  await deleteDoc(doc(db, "transactions", id));
+  showToast("🗑️ Deleted!");
+  loadTransactions();
+};
+
+// INIT
+window.onload = function () {
+  loadTransactions();
+};
+</script>
 </body>
 </html>
