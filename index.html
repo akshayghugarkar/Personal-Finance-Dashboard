@@ -587,6 +587,20 @@
         .toast-success { background: var(--grad-success); }
         .toast-message { font-weight: 600; }
 
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        .no-data i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            display: block;
+            opacity: 0.5;
+        }
+
         @media (max-width: 768px) {
             .dashboard { padding: 20px 15px; }
             .header { padding: 20px; }
@@ -793,28 +807,29 @@ const kpiData = [
 ];
 
 const insightsData = [
-    { icon: 'fa-exclamation-triangle', bg: 'var(--grad-warning)', color: '#8b4513', title: 'Food Spending Alert', text: 'You spent 20% more on food this month (₹12,500 vs ₹10,400). Consider meal planning to save more.' },
-    { icon: 'fa-check-circle', bg: 'var(--grad-success)', color: 'white', title: 'Great Job on Petrol!', text: 'Your petrol expenses are under control this month. Keep up the good work!' },
-    { icon: 'fa-dumbbell', bg: 'var(--grad-purple)', color: 'white', title: 'Gym & Fitness', text: 'Total fitness spending: ₹5,000 (Gym + Protein + Diet). Stay consistent! 💪' },
-    { icon: 'fa-chart-line', bg: 'var(--grad-primary)', color: 'white', title: 'Forecast: Next Month', text: 'Based on trends, estimated expenses for next month: ₹35,000. Plan accordingly!' }
+    { icon: 'fa-exclamation-triangle', bg: 'var(--grad-warning)', color: '#8b4513', title: 'Food Spending Alert', text: 'Monitor your food expenses to stay within budget. Consider meal planning to save more.' },
+    { icon: 'fa-gas-pump', bg: 'var(--grad-orange)', color: 'white', title: 'Petrol Tracker', text: 'Keep track of your petrol expenses. Budget: ₹2,000/month.' },
+    { icon: 'fa-dumbbell', bg: 'var(--grad-purple)', color: 'white', title: 'Gym & Fitness', text: 'Total fitness budget: ₹5,000 (Gym ₹1,000 + Protein ₹2,000 + Diet ₹2,000). Stay consistent! 💪' },
+    { icon: 'fa-chart-line', bg: 'var(--grad-primary)', color: 'white', title: 'Smart Tip', text: 'Track all expenses regularly to understand your spending patterns better!' }
 ];
 
-// ✅ UPDATED BUDGET DATA
+// ✅ BUDGET DATA - Only contains budget limits (spent will be calculated from transactions)
 const budgetData = [
-    { name: 'Food', icon: 'fa-utensils', bg: 'var(--grad-danger)', spent: 12500, total: 15000 },
-    { name: 'Rent', icon: 'fa-home', bg: 'var(--grad-primary)', spent: 4500, total: 5000 },
-    { name: 'Petrol', icon: 'fa-gas-pump', bg: 'var(--grad-orange)', spent: 3000, total: 4000 },
-    { name: 'Bills', icon: 'fa-file-invoice-dollar', bg: 'var(--grad-info)', iconColor: '#764ba2', spent: 5500, total: 7500 },
-    { name: 'Entertainment', icon: 'fa-film', bg: 'var(--grad-pink)', spent: 5600, total: 5000 },
-    { name: 'Healthcare', icon: 'fa-heartbeat', bg: 'var(--grad-success)', spent: 2000, total: 5000 },
-    { name: 'Gym', icon: 'fa-dumbbell', bg: 'var(--grad-purple)', spent: 1000, total: 1500 },
-    { name: 'Gym Protein', icon: 'fa-blender', bg: 'var(--grad-green)', spent: 2000, total: 2500 },
-    { name: 'Gym Diet', icon: 'fa-apple-alt', bg: 'var(--grad-dark)', spent: 2000, total: 2500 }
+    { name: 'Food', icon: 'fa-utensils', bg: 'var(--grad-danger)', budget: 15000 },
+    { name: 'Rent', icon: 'fa-home', bg: 'var(--grad-primary)', budget: 4500 },
+    { name: 'Petrol', icon: 'fa-gas-pump', bg: 'var(--grad-orange)', budget: 2000 },
+    { name: 'Bills', icon: 'fa-file-invoice-dollar', bg: 'var(--grad-info)', iconColor: '#764ba2', budget: 7500 },
+    { name: 'Entertainment', icon: 'fa-film', bg: 'var(--grad-pink)', budget: 5000 },
+    { name: 'Healthcare', icon: 'fa-heartbeat', bg: 'var(--grad-success)', budget: 5000 },
+    { name: 'Gym', icon: 'fa-dumbbell', bg: 'var(--grad-purple)', budget: 1000 },
+    { name: 'Gym Protein', icon: 'fa-blender', bg: 'var(--grad-green)', budget: 2000 },
+    { name: 'Gym Diet', icon: 'fa-apple-alt', bg: 'var(--grad-dark)', budget: 2000 }
 ];
 
-// ==================== RENDER FUNCTIONS ====================
+// ==================== HELPER ====================
 const formatCurrency = n => `₹${n.toLocaleString('en-IN')}`;
 
+// ==================== RENDER FUNCTIONS ====================
 function renderKPIs() {
     $('kpiGrid').innerHTML = kpiData.map(k => `
         <div class="kpi-card glass">
@@ -842,11 +857,27 @@ function renderInsights() {
     `).join('');
 }
 
-function renderBudgets() {
+// ✅ DYNAMIC BUDGET RENDERING - Calculates spent from Firebase transactions
+async function renderBudgets() {
+    const snapshot = await getDocs(collection(db, "transactions"));
+    
+    // Calculate spent amount per category from transactions
+    const spentByCategory = {};
+    snapshot.forEach(d => {
+        const t = d.data();
+        if (t.type === 'expense') {
+            spentByCategory[t.category] = (spentByCategory[t.category] || 0) + t.amount;
+        }
+    });
+    
+    // Render budget cards with dynamic spent amounts
     $('budgetGrid').innerHTML = budgetData.map(b => {
-        const percent = Math.round((b.spent / b.total) * 100);
+        const spent = spentByCategory[b.name] || 0;
+        const percent = b.budget > 0 ? Math.round((spent / b.budget) * 100) : 0;
         const status = percent > 100 ? 'over' : percent > 80 ? 'warning' : 'good';
         const fillBg = status === 'over' ? 'var(--grad-danger)' : status === 'warning' ? 'var(--grad-warning)' : 'var(--grad-success)';
+        const remaining = b.budget - spent;
+        
         return `
             <div class="budget-card glass">
                 <div class="budget-header flex-between">
@@ -858,25 +889,88 @@ function renderBudgets() {
                     <div class="budget-status status-${status}">${percent}%</div>
                 </div>
                 <div class="budget-amounts flex-between">
-                    <span class="budget-spent">${formatCurrency(b.spent)}</span>
-                    <span class="budget-total">/ ${formatCurrency(b.total)}</span>
+                    <span class="budget-spent">${formatCurrency(spent)}</span>
+                    <span class="budget-total">/ ${formatCurrency(b.budget)}</span>
                 </div>
                 <div class="progress-bar">
                     <div class="progress-fill" style="width:${Math.min(percent, 100)}%;background:${fillBg}"></div>
+                </div>
+                <div style="margin-top:8px;font-size:12px;color:${remaining >= 0 ? '#00f2fe' : '#fee140'}">
+                    ${remaining >= 0 ? `₹${remaining.toLocaleString('en-IN')} remaining` : `₹${Math.abs(remaining).toLocaleString('en-IN')} over budget!`}
                 </div>
             </div>
         `;
     }).join('');
 }
 
+// ✅ DYNAMIC PIE CHART - Updates based on actual transactions
+let expenseChart = null;
+
+async function updateExpenseChart() {
+    const snapshot = await getDocs(collection(db, "transactions"));
+    
+    // Calculate spent per category
+    const spentByCategory = {};
+    snapshot.forEach(d => {
+        const t = d.data();
+        if (t.type === 'expense') {
+            spentByCategory[t.category] = (spentByCategory[t.category] || 0) + t.amount;
+        }
+    });
+    
+    const categories = Object.keys(spentByCategory);
+    const amounts = Object.values(spentByCategory);
+    
+    const colorMap = {
+        'Food': '#fa709a',
+        'Rent': '#667eea',
+        'Petrol': '#f5af19',
+        'Bills': '#a8edea',
+        'Entertainment': '#f093fb',
+        'Healthcare': '#4facfe',
+        'Gym': '#8E2DE2',
+        'Gym Protein': '#38ef7d',
+        'Gym Diet': '#30cfd0',
+        'Other': '#a0a0b8',
+        'Salary': '#00f2fe',
+        'Freelance': '#00f2fe'
+    };
+    
+    const colors = categories.map(cat => colorMap[cat] || '#a0a0b8');
+    
+    if (expenseChart) {
+        expenseChart.data.labels = categories;
+        expenseChart.data.datasets[0].data = amounts;
+        expenseChart.data.datasets[0].backgroundColor = colors;
+        expenseChart.update();
+    }
+}
+
 // ==================== FIREBASE FUNCTIONS ====================
 async function loadTransactions() {
     const snapshot = await getDocs(collection(db, "transactions"));
     const tbody = $('transactionBody');
+    
+    if (snapshot.empty) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" class="no-data">
+                    <i class="fas fa-receipt"></i>
+                    No transactions yet. Add your first transaction!
+                </td>
+            </tr>
+        `;
+        return;
+    }
+    
     tbody.innerHTML = '';
     
-    snapshot.forEach(d => {
-        const t = d.data();
+    // Sort by date (newest first)
+    const transactions = [];
+    snapshot.forEach(d => transactions.push({ id: d.id, ...d.data() }));
+    transactions.sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    transactions.forEach(t => {
         tbody.innerHTML += `
             <tr>
                 <td>${t.date}</td>
@@ -884,7 +978,7 @@ async function loadTransactions() {
                 <td>${t.category}</td>
                 <td><span class="transaction-type type-${t.type}">${t.type}</span></td>
                 <td class="amount-${t.type}">${formatCurrency(t.amount)}</td>
-                <td><button class="action-btn btn-delete" onclick="deleteTx('${d.id}')">Delete</button></td>
+                <td><button class="action-btn btn-delete" onclick="deleteTx('${t.id}')">Delete</button></td>
             </tr>
         `;
     });
@@ -907,6 +1001,12 @@ async function updateDashboard() {
     $('monthlySavings').textContent = formatCurrency(savings);
     $('totalBalance').textContent = formatCurrency(savings);
     $('savingsRate').textContent = `${rate}%`;
+    
+    // Update budget tracking
+    await renderBudgets();
+    
+    // Update expense chart
+    await updateExpenseChart();
 }
 
 async function loadGoals() {
@@ -920,19 +1020,34 @@ async function loadGoals() {
         </div>
     `;
     
+    if (snapshot.empty) {
+        container.innerHTML += `
+            <div class="no-data">
+                <i class="fas fa-flag-checkered"></i>
+                No goals yet. Set your first savings goal!
+            </div>
+        `;
+        return;
+    }
+    
     snapshot.forEach(d => {
         const g = d.data();
         const percent = Math.round((g.saved / g.target) * 100);
+        const status = percent >= 100 ? 'Completed! 🎉' : `${percent}% complete`;
+        
         container.innerHTML += `
             <div class="goal-item">
                 <div class="goal-header flex-between">
                     <div class="goal-name"><i class="fas fa-flag" style="color:#667eea"></i>${g.name}</div>
                     <div class="goal-amount">${formatCurrency(g.saved)} / ${formatCurrency(g.target)}</div>
                 </div>
-                <div class="progress-bar"><div class="progress-fill" style="width:${percent}%"></div></div>
-                <div class="action-buttons" style="margin-top:10px">
-                    <button class="action-btn btn-edit" onclick="editGoal('${d.id}','${g.name}',${g.target},${g.saved})">Edit</button>
-                    <button class="action-btn btn-delete" onclick="deleteGoal('${d.id}')">Delete</button>
+                <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(percent, 100)}%"></div></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px">
+                    <span style="font-size:12px;color:var(--text-secondary)">${status}</span>
+                    <div class="action-buttons">
+                        <button class="action-btn btn-edit" onclick="editGoal('${d.id}','${g.name}',${g.target},${g.saved})">Edit</button>
+                        <button class="action-btn btn-delete" onclick="deleteGoal('${d.id}')">Delete</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -951,13 +1066,15 @@ window.showToast = msg => {
 };
 
 window.deleteTx = async id => {
+    if (!confirm('Delete this transaction?')) return;
     await deleteDoc(doc(db, "transactions", id));
-    showToast("🗑️ Deleted!");
+    showToast("🗑️ Transaction Deleted!");
     loadTransactions();
     updateDashboard();
 };
 
 window.deleteGoal = async id => {
+    if (!confirm('Delete this goal?')) return;
     await deleteDoc(doc(db, "goals", id));
     showToast("🗑️ Goal Deleted!");
     loadGoals();
@@ -966,19 +1083,44 @@ window.deleteGoal = async id => {
 window.editGoal = async (id, name, target, saved) => {
     const newName = prompt("Goal Name:", name);
     if (!newName) return;
-    const newTarget = prompt("Target:", target);
-    const newSaved = prompt("Saved:", saved);
+    const newTarget = prompt("Target Amount:", target);
+    const newSaved = prompt("Saved Amount:", saved);
+    
+    if (!newTarget || !newSaved) return;
     
     await updateDoc(doc(db, "goals", id), {
         name: newName,
         target: parseInt(newTarget),
         saved: parseInt(newSaved)
     });
-    showToast("✅ Updated!");
+    showToast("✅ Goal Updated!");
     loadGoals();
 };
 
-window.exportReport = () => showToast("📊 Export coming soon!");
+window.exportReport = () => {
+    // Generate CSV
+    const rows = [['Date', 'Description', 'Category', 'Type', 'Amount']];
+    document.querySelectorAll('#transactionBody tr').forEach(row => {
+        if (row.cells.length >= 5) {
+            rows.push([
+                row.cells[0].textContent,
+                row.cells[1].textContent,
+                row.cells[2].textContent,
+                row.cells[3].textContent.trim(),
+                row.cells[4].textContent
+            ]);
+        }
+    });
+    
+    const csv = rows.map(r => r.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `finance-report-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    showToast("📊 Report Downloaded!");
+};
 
 // Form Submissions
 $('transactionForm').onsubmit = async e => {
@@ -1021,6 +1163,8 @@ function filterTable() {
     const type = $('typeFilter').value;
     
     document.querySelectorAll('#transactionBody tr').forEach(row => {
+        if (row.cells.length < 5) return; // Skip no-data row
+        
         const text = row.textContent.toLowerCase();
         const rowCat = row.cells[2].textContent;
         const rowType = row.cells[3].textContent.trim().toLowerCase();
@@ -1053,31 +1197,27 @@ function initCharts() {
         data: {
             labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             datasets: [
-                { label: 'Income', data: [12000, 8000, 15000, 10000, 18000, 5000, 8000], backgroundColor: 'rgba(79, 172, 254, 0.8)', borderRadius: 8 },
-                { label: 'Expenses', data: [8000, 6000, 10000, 7500, 12000, 9000, 5500], backgroundColor: 'rgba(250, 112, 154, 0.8)', borderRadius: 8 }
+                { label: 'Income', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(79, 172, 254, 0.8)', borderRadius: 8 },
+                { label: 'Expenses', data: [0, 0, 0, 0, 0, 0, 0], backgroundColor: 'rgba(250, 112, 154, 0.8)', borderRadius: 8 }
             ]
         },
-        options: { ...chartOptions, scales: { x: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }, y: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+        options: { 
+            ...chartOptions, 
+            scales: { 
+                x: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }, 
+                y: { ticks: { color: '#a0a0b8' }, grid: { color: 'rgba(255,255,255,0.05)' } } 
+            } 
+        }
     });
 
-    // ✅ UPDATED PIE CHART with new categories
-    new Chart($('expenseBreakdownChart'), {
+    // Expense Breakdown Chart (will be updated dynamically)
+    expenseChart = new Chart($('expenseBreakdownChart'), {
         type: 'doughnut',
         data: {
-            labels: ['Food', 'Rent', 'Petrol', 'Bills', 'Entertainment', 'Healthcare', 'Gym', 'Gym Protein', 'Gym Diet'],
+            labels: ['No Data'],
             datasets: [{
-                data: [12500, 4500, 3000, 5500, 5600, 2000, 1000, 2000, 2000],
-                backgroundColor: [
-                    '#fa709a',  // Food
-                    '#667eea',  // Rent
-                    '#f5af19',  // Petrol (orange)
-                    '#a8edea',  // Bills
-                    '#f093fb',  // Entertainment
-                    '#4facfe',  // Healthcare
-                    '#8E2DE2',  // Gym (purple)
-                    '#38ef7d',  // Gym Protein (green)
-                    '#30cfd0'   // Gym Diet (teal)
-                ],
+                data: [1],
+                backgroundColor: ['rgba(160, 160, 184, 0.3)'],
                 borderWidth: 0
             }]
         },
@@ -1089,11 +1229,13 @@ function initCharts() {
 window.onload = () => {
     renderKPIs();
     renderInsights();
-    renderBudgets();
+    initCharts();
     loadTransactions();
     updateDashboard();
     loadGoals();
-    initCharts();
+    
+    // Set default date to today
+    $('txDate').valueAsDate = new Date();
 };
 </script>
 </body>
