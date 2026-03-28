@@ -19,6 +19,7 @@
             --grad-orange: linear-gradient(135deg, #f5af19 0%, #f12711 100%);
             --grad-green: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
             --grad-purple: linear-gradient(135deg, #8E2DE2 0%, #4A00E0 100%);
+            --grad-gold: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
             --bg-primary: #0a0a1a;
             --bg-secondary: #12122a;
             --bg-card: rgba(255, 255, 255, 0.03);
@@ -99,7 +100,6 @@
 
         .header h1 i { font-size: 26px; }
 
-        /* Month Selector */
         .month-selector {
             display: flex;
             align-items: center;
@@ -140,7 +140,6 @@
             opacity: 0.7;
         }
 
-        /* Buttons */
         .btn {
             padding: 10px 18px;
             border: none;
@@ -168,6 +167,7 @@
         }
 
         .btn-sm { padding: 6px 12px; font-size: 11px; }
+        .btn-xs { padding: 4px 8px; font-size: 10px; border-radius: 6px; }
 
         .action-btn {
             padding: 5px 12px;
@@ -324,7 +324,7 @@
         }
 
         .kpi-item {
-            padding: 20px 24px;
+            padding: 16px 20px;
             position: relative;
             transition: var(--transition);
             border-right: 1px solid var(--border);
@@ -355,7 +355,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .kpi-item-label {
@@ -365,13 +365,13 @@
         }
 
         .kpi-item-icon {
-            width: 32px;
-            height: 32px;
+            width: 28px;
+            height: 28px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 12px;
             color: white;
         }
 
@@ -381,7 +381,7 @@
         .kpi-item.savings .kpi-item-icon { background: var(--grad-dark); }
 
         .kpi-item-name {
-            font: 500 11px 'Inter', sans-serif;
+            font: 500 10px 'Inter', sans-serif;
             color: var(--text-secondary);
             text-transform: uppercase;
             letter-spacing: 0.8px;
@@ -390,30 +390,31 @@
         .kpi-item-trend {
             display: flex;
             align-items: center;
-            gap: 4px;
-            padding: 3px 8px;
-            border-radius: 12px;
-            font: 600 10px 'Inter', sans-serif;
+            gap: 3px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font: 600 9px 'Inter', sans-serif;
         }
 
         .kpi-item-trend.up { background: rgba(0, 242, 254, 0.1); color: #00f2fe; }
         .kpi-item-trend.down { background: rgba(250, 112, 154, 0.1); color: #fa709a; }
 
         .kpi-item-value {
-            font: 700 28px 'Inter', sans-serif;
+            font: 700 24px 'Inter', sans-serif;
             letter-spacing: -1px;
             color: var(--text-primary);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .kpi-item.balance .kpi-item-value {
+            font-size: 22px;
             background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
         .kpi-item-sub {
-            font: 400 11px 'Inter', sans-serif;
+            font: 400 10px 'Inter', sans-serif;
             color: var(--text-secondary);
             display: flex;
             align-items: center;
@@ -424,11 +425,93 @@
         .kpi-item-sub.positive { color: #00f2fe; }
         .kpi-item-sub.negative { color: #fa709a; }
 
+        /* Balance Sources */
+        .balance-sources {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px dashed rgba(255,255,255,0.1);
+        }
+
+        .balance-source {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 4px 8px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 6px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .balance-source:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .balance-source-left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .balance-source-icon {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: white;
+        }
+
+        .balance-source-icon.transactions { background: var(--grad-success); }
+        .balance-source-icon.bank { background: var(--grad-primary); }
+        .balance-source-icon.shares { background: var(--grad-gold); }
+
+        .balance-source-name {
+            font: 500 9px 'Inter', sans-serif;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .balance-source-value {
+            font: 600 10px 'Inter', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .balance-source-value.positive { color: #00f2fe; }
+        .balance-source-value.negative { color: #fa709a; }
+
+        .balance-edit-btn {
+            padding: 2px 6px;
+            border: none;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.05);
+            color: var(--text-secondary);
+            font-size: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            opacity: 0;
+        }
+
+        .balance-source:hover .balance-edit-btn {
+            opacity: 1;
+        }
+
+        .balance-edit-btn:hover {
+            background: var(--grad-primary);
+            color: white;
+        }
+
         .kpi-mini-progress {
-            height: 4px;
+            height: 3px;
             background: rgba(255, 255, 255, 0.05);
             border-radius: 2px;
-            margin-top: 10px;
+            margin-top: 8px;
             overflow: hidden;
         }
 
@@ -561,7 +644,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        /* Month Indicator Badge */
         .month-indicator {
             background: var(--grad-primary);
             color: white;
@@ -827,7 +909,7 @@
             .kpi-grid { grid-template-columns: 1fr; }
             .kpi-item { border-right: none !important; border-bottom: 1px solid var(--border); }
             .kpi-item:last-child { border-bottom: none; }
-            .kpi-item-value { font-size: 24px; }
+            .kpi-item-value { font-size: 22px; }
             .budget-grid { grid-template-columns: 1fr; }
             .modal-content { padding: 20px; }
             .chart-stats { grid-template-columns: 1fr; }
@@ -1019,6 +1101,33 @@
         </div>
     </div>
 
+    <!-- Balance Source Modal -->
+    <div id="balanceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header flex-between">
+                <h2 class="gradient-text">Edit Balance Sources</h2>
+                <button class="close-btn" onclick="closeModal('balance')">&times;</button>
+            </div>
+            <form id="balanceForm">
+                <div class="form-group">
+                    <label><i class="fas fa-university"></i> Bank Account Balance</label>
+                    <input type="number" id="bankBalance" placeholder="e.g., 50000" min="0">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-chart-line"></i> Share Market Value</label>
+                    <input type="number" id="shareBalance" placeholder="e.g., 25000">
+                </div>
+                <p style="font-size:11px;color:var(--text-secondary);margin-bottom:20px">
+                    <i class="fas fa-info-circle"></i> Transactions balance is calculated automatically from your income and expenses.
+                </p>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('balance')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast" class="toast glass flex-center">
         <div class="toast-icon toast-success flex-center"><i class="fas fa-check"></i></div>
@@ -1027,7 +1136,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
 
 const app = initializeApp({
     apiKey: "AIzaSyBMp881TtdVKp3OYG1Wp4nGc_QuL14Bn2c",
@@ -1045,6 +1154,12 @@ let selectedMonth = new Date().toISOString().slice(0, 7);
 let selectedChartView = 'daily';
 let allTransactions = [];
 let expenseChart = null, mainChart = null;
+
+// Balance sources stored in Firebase
+let balanceSources = {
+    bank: 0,
+    shares: 0
+};
 
 const budgetData = [
     { name: 'Food', icon: 'fa-utensils', bg: 'var(--grad-danger)', budget: 15000 },
@@ -1068,11 +1183,38 @@ const colorMap = {
 const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const formatCurrency = n => `₹${n.toLocaleString('en-IN')}`;
+const formatCurrencyShort = n => {
+    if (Math.abs(n) >= 100000) return `₹${(n/100000).toFixed(1)}L`;
+    if (Math.abs(n) >= 1000) return `₹${(n/1000).toFixed(1)}K`;
+    return `₹${n}`;
+};
 const formatMonthYear = m => new Date(m + '-01').toLocaleDateString('en-IN', { month: 'short', year: 'numeric' });
 const formatMonthFull = m => new Date(m + '-01').toLocaleDateString('en-IN', { month: 'long', year: 'numeric' });
 const getMonth = d => d.slice(0, 7);
 const getYear = d => d.slice(0, 4);
 const getDays = m => new Date(m.split('-')[0], m.split('-')[1], 0).getDate();
+
+// Load balance sources from Firebase
+async function loadBalanceSources() {
+    try {
+        const docRef = doc(db, "settings", "balanceSources");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            balanceSources = docSnap.data();
+        }
+    } catch (e) {
+        console.log("No balance sources found, using defaults");
+    }
+}
+
+// Save balance sources to Firebase
+async function saveBalanceSources() {
+    try {
+        await setDoc(doc(db, "settings", "balanceSources"), balanceSources);
+    } catch (e) {
+        console.error("Error saving balance sources:", e);
+    }
+}
 
 // Month Navigation
 window.changeMonth = delta => {
@@ -1100,14 +1242,22 @@ window.switchChartView = v => {
     updateMainChart();
 };
 
-// KPI Card
+// Open balance edit modal
+window.openBalanceModal = () => {
+    $('bankBalance').value = balanceSources.bank || '';
+    $('shareBalance').value = balanceSources.shares || '';
+    openModal('balance');
+};
+
+// KPI Card with Balance Sources
 function renderKPIs(income, expense, prevIncome, prevExpense) {
-    const balance = income - expense;
+    const transactionBalance = income - expense;
+    const totalBalance = transactionBalance + (balanceSources.bank || 0) + (balanceSources.shares || 0);
     const savings = income - expense;
     const rate = income > 0 ? Math.round((savings / income) * 100) : 0;
     const iTrend = prevIncome > 0 ? Math.round(((income - prevIncome) / prevIncome) * 100) : 0;
     const eTrend = prevExpense > 0 ? Math.round(((expense - prevExpense) / prevExpense) * 100) : 0;
-    const bTrend = (prevIncome - prevExpense) !== 0 ? Math.round(((balance - (prevIncome - prevExpense)) / Math.abs(prevIncome - prevExpense || 1)) * 100) : 0;
+    const bTrend = (prevIncome - prevExpense) !== 0 ? Math.round(((transactionBalance - (prevIncome - prevExpense)) / Math.abs(prevIncome - prevExpense || 1)) * 100) : 0;
 
     const totalBudget = budgetData.reduce((a, b) => a + b.budget, 0);
     const expensePercent = totalBudget > 0 ? Math.min((expense / totalBudget) * 100, 100) : 0;
@@ -1129,23 +1279,48 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
             </div>
         </div>
         <div class="kpi-grid">
+            <!-- Balance with Sources -->
             <div class="kpi-item balance">
                 <div class="kpi-item-top">
                     <div class="kpi-item-label">
                         <div class="kpi-item-icon"><i class="fas fa-wallet"></i></div>
-                        <span class="kpi-item-name">Balance</span>
+                        <span class="kpi-item-name">Total Balance</span>
                     </div>
-                    <div class="kpi-item-trend ${bTrend >= 0 ? 'up' : 'down'}">
-                        <i class="fas fa-arrow-${bTrend >= 0 ? 'up' : 'down'}"></i>${Math.abs(bTrend)}%
+                    <button class="btn-xs btn-secondary" onclick="openBalanceModal()" title="Edit Sources">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
+                <div class="kpi-item-value">${formatCurrency(totalBalance)}</div>
+                
+                <!-- Balance Sources Breakdown -->
+                <div class="balance-sources">
+                    <div class="balance-source" onclick="openBalanceModal()">
+                        <div class="balance-source-left">
+                            <div class="balance-source-icon transactions"><i class="fas fa-exchange-alt"></i></div>
+                            <span class="balance-source-name">Transactions</span>
+                        </div>
+                        <span class="balance-source-value ${transactionBalance >= 0 ? 'positive' : 'negative'}">${formatCurrencyShort(transactionBalance)}</span>
+                    </div>
+                    <div class="balance-source" onclick="openBalanceModal()">
+                        <div class="balance-source-left">
+                            <div class="balance-source-icon bank"><i class="fas fa-university"></i></div>
+                            <span class="balance-source-name">Bank</span>
+                        </div>
+                        <span class="balance-source-value">${formatCurrencyShort(balanceSources.bank || 0)}</span>
+                        <button class="balance-edit-btn"><i class="fas fa-pen"></i></button>
+                    </div>
+                    <div class="balance-source" onclick="openBalanceModal()">
+                        <div class="balance-source-left">
+                            <div class="balance-source-icon shares"><i class="fas fa-chart-line"></i></div>
+                            <span class="balance-source-name">Shares</span>
+                        </div>
+                        <span class="balance-source-value ${(balanceSources.shares || 0) >= 0 ? '' : 'negative'}">${formatCurrencyShort(balanceSources.shares || 0)}</span>
+                        <button class="balance-edit-btn"><i class="fas fa-pen"></i></button>
                     </div>
                 </div>
-                <div class="kpi-item-value">${formatCurrency(balance)}</div>
-                <div class="kpi-item-sub ${balance >= 0 ? 'positive' : 'negative'}">
-                    <i class="fas fa-${balance >= 0 ? 'check-circle' : 'exclamation-circle'}"></i>
-                    ${balance >= 0 ? 'Healthy' : 'Negative'}
-                </div>
-                <div class="kpi-mini-progress"><div class="kpi-mini-progress-fill" style="width:${balance >= 0 ? 100 : 50}%"></div></div>
             </div>
+
+            <!-- Income -->
             <div class="kpi-item income">
                 <div class="kpi-item-top">
                     <div class="kpi-item-label">
@@ -1160,6 +1335,8 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                 <div class="kpi-item-sub">vs last month</div>
                 <div class="kpi-mini-progress"><div class="kpi-mini-progress-fill" style="width:${incomePercent}%"></div></div>
             </div>
+
+            <!-- Expenses -->
             <div class="kpi-item expense">
                 <div class="kpi-item-top">
                     <div class="kpi-item-label">
@@ -1171,9 +1348,11 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                     </div>
                 </div>
                 <div class="kpi-item-value">${formatCurrency(expense)}</div>
-                <div class="kpi-item-sub">of <strong>${formatCurrency(totalBudget)}</strong> budget</div>
+                <div class="kpi-item-sub">of <strong>${formatCurrencyShort(totalBudget)}</strong> budget</div>
                 <div class="kpi-mini-progress"><div class="kpi-mini-progress-fill" style="width:${expensePercent}%"></div></div>
             </div>
+
+            <!-- Savings -->
             <div class="kpi-item savings">
                 <div class="kpi-item-top">
                     <div class="kpi-item-label">
@@ -1240,7 +1419,6 @@ async function loadAllTransactions() {
     allTransactions.sort((a, b) => new Date(b.date) - new Date(a.date));
 }
 
-// Filter transactions by selected month only
 const getMonthTxns = m => allTransactions.filter(t => getMonth(t.date) === m);
 const getYearTxns = y => allTransactions.filter(t => getYear(t.date) === y);
 
@@ -1257,30 +1435,24 @@ function calcData(txns) {
     return { income, expense, spentByCategory: spent, dailyData: daily };
 }
 
-// Render transactions for selected month only
+function formatDate(dateStr) {
+    const date = new Date(dateStr);
+    const day = date.getDate();
+    const month = monthNames[date.getMonth()];
+    return `${day} ${month}`;
+}
+
 function renderTransactions(txns) {
     const tbody = $('transactionBody');
-    
-    // Update month indicator
     $('txMonthName').textContent = formatMonthFull(selectedMonth);
     $('txCount').textContent = `${txns.length} transaction${txns.length !== 1 ? 's' : ''}`;
     
     if (!txns.length) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="no-data">
-                    <i class="fas fa-receipt"></i>
-                    No transactions for ${formatMonthFull(selectedMonth)}
-                    <p>Select another month or add a new transaction</p>
-                </td>
-            </tr>
-        `;
+        tbody.innerHTML = `<tr><td colspan="6" class="no-data"><i class="fas fa-receipt"></i>No transactions for ${formatMonthFull(selectedMonth)}<p>Select another month or add a new transaction</p></td></tr>`;
         return;
     }
     
-    // Sort by date (newest first)
     const sortedTxns = [...txns].sort((a, b) => new Date(b.date) - new Date(a.date));
-    
     tbody.innerHTML = sortedTxns.map(t => `
         <tr>
             <td>${formatDate(t.date)}</td>
@@ -1291,14 +1463,6 @@ function renderTransactions(txns) {
             <td><button class="action-btn btn-delete" onclick="deleteTx('${t.id}')"><i class="fas fa-trash"></i></button></td>
         </tr>
     `).join('');
-}
-
-// Format date nicely
-function formatDate(dateStr) {
-    const date = new Date(dateStr);
-    const day = date.getDate();
-    const month = monthNames[date.getMonth()];
-    return `${day} ${month}`;
 }
 
 function updateMainChart() {
@@ -1341,18 +1505,11 @@ function updateMainChart() {
             t.type === 'income' ? totalIn += t.amount : totalEx += t.amount;
         });
         const years = Object.keys(yearly).sort();
-        labels = years; 
-        incData = years.map(y => yearly[y]?.income || 0); 
-        expData = years.map(y => yearly[y]?.expense || 0);
+        labels = years; incData = years.map(y => yearly[y]?.income || 0); expData = years.map(y => yearly[y]?.expense || 0);
         subtitle = `Yearly`;
     }
     
-    if (mainChart) { 
-        mainChart.data.labels = labels; 
-        mainChart.data.datasets[0].data = incData; 
-        mainChart.data.datasets[1].data = expData; 
-        mainChart.update(); 
-    }
+    if (mainChart) { mainChart.data.labels = labels; mainChart.data.datasets[0].data = incData; mainChart.data.datasets[1].data = expData; mainChart.update(); }
     
     $('chartSubtitle').textContent = subtitle;
     $('chartTotalIncome').textContent = formatCurrency(totalIn);
@@ -1365,44 +1522,22 @@ function updateMainChart() {
 function updateExpenseChart(spent) {
     const cats = Object.keys(spent), vals = Object.values(spent), cols = cats.map(c => colorMap[c] || '#a0a0b8');
     if (expenseChart) {
-        if (cats.length) { 
-            expenseChart.data.labels = cats; 
-            expenseChart.data.datasets[0].data = vals; 
-            expenseChart.data.datasets[0].backgroundColor = cols; 
-        } else { 
-            expenseChart.data.labels = ['No Data']; 
-            expenseChart.data.datasets[0].data = [1]; 
-            expenseChart.data.datasets[0].backgroundColor = ['rgba(255,255,255,0.05)']; 
-        }
+        if (cats.length) { expenseChart.data.labels = cats; expenseChart.data.datasets[0].data = vals; expenseChart.data.datasets[0].backgroundColor = cols; }
+        else { expenseChart.data.labels = ['No Data']; expenseChart.data.datasets[0].data = [1]; expenseChart.data.datasets[0].backgroundColor = ['rgba(255,255,255,0.05)']; }
         expenseChart.update();
     }
 }
 
 function initCharts() {
-    const opts = { 
-        responsive: true, 
-        maintainAspectRatio: true, 
-        plugins: { legend: { labels: { color: '#8a8aa3', font: { family: 'Inter', size: 11 } } } } 
-    };
-    
+    const opts = { responsive: true, maintainAspectRatio: true, plugins: { legend: { labels: { color: '#8a8aa3', font: { family: 'Inter', size: 11 } } } } };
     mainChart = new Chart($('mainChart'), {
         type: 'bar',
-        data: { 
-            labels: [], 
-            datasets: [
-                { label: 'Income', data: [], backgroundColor: 'rgba(79, 172, 254, 0.7)', borderRadius: 4 },
-                { label: 'Expenses', data: [], backgroundColor: 'rgba(250, 112, 154, 0.7)', borderRadius: 4 }
-            ]
-        },
-        options: { 
-            ...opts, 
-            scales: { 
-                x: { ticks: { color: '#8a8aa3', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } }, 
-                y: { ticks: { color: '#8a8aa3', callback: v => '₹' + v.toLocaleString('en-IN') }, grid: { color: 'rgba(255,255,255,0.03)' } } 
-            } 
-        }
+        data: { labels: [], datasets: [
+            { label: 'Income', data: [], backgroundColor: 'rgba(79, 172, 254, 0.7)', borderRadius: 4 },
+            { label: 'Expenses', data: [], backgroundColor: 'rgba(250, 112, 154, 0.7)', borderRadius: 4 }
+        ]},
+        options: { ...opts, scales: { x: { ticks: { color: '#8a8aa3', font: { size: 10 } }, grid: { color: 'rgba(255,255,255,0.03)' } }, y: { ticks: { color: '#8a8aa3', callback: v => '₹' + v.toLocaleString('en-IN') }, grid: { color: 'rgba(255,255,255,0.03)' } } } }
     });
-    
     expenseChart = new Chart($('expenseBreakdownChart'), {
         type: 'doughnut',
         data: { labels: ['No Data'], datasets: [{ data: [1], backgroundColor: ['rgba(255,255,255,0.05)'], borderWidth: 0 }] },
@@ -1414,12 +1549,7 @@ async function loadGoals() {
     const snap = await getDocs(collection(db, "goals"));
     const c = $('goalsContainer');
     c.innerHTML = `<div class="section-header flex-between"><h3 class="section-title"><i class="fas fa-bullseye"></i>Goals</h3><button class="btn btn-sm btn-primary" onclick="openModal('goal')"><i class="fas fa-plus"></i></button></div>`;
-    
-    if (snap.empty) { 
-        c.innerHTML += `<div class="no-data"><i class="fas fa-flag"></i>No goals</div>`; 
-        return; 
-    }
-    
+    if (snap.empty) { c.innerHTML += `<div class="no-data"><i class="fas fa-flag"></i>No goals</div>`; return; }
     snap.forEach(d => {
         const g = d.data(), pct = Math.round((g.saved / g.target) * 100);
         c.innerHTML += `
@@ -1442,20 +1572,16 @@ async function loadGoals() {
 }
 
 async function refreshAll() {
-    // Get current month's transactions only
     const currentMonthTxns = getMonthTxns(selectedMonth);
     const data = calcData(currentMonthTxns);
-    
-    // Get previous month for comparison
     const [y, m] = selectedMonth.split('-').map(Number);
     const prevMonthStr = new Date(y, m - 2, 1).toISOString().slice(0, 7);
     const prevMonthTxns = getMonthTxns(prevMonthStr);
     const prevData = calcData(prevMonthTxns);
     
-    // Render all components with selected month's data
     renderKPIs(data.income, data.expense, prevData.income, prevData.expense);
     renderBudgets(data.spentByCategory);
-    renderTransactions(currentMonthTxns); // Only selected month
+    renderTransactions(currentMonthTxns);
     renderInsights(data);
     updateMainChart();
     updateExpenseChart(data.spentByCategory);
@@ -1464,128 +1590,65 @@ async function refreshAll() {
 // Event Handlers
 window.openModal = t => $(`${t}Modal`).classList.add('active');
 window.closeModal = t => $(`${t}Modal`).classList.remove('active');
-window.showToast = msg => { 
-    const t = $('toast'); 
-    t.querySelector('.toast-message').textContent = msg; 
-    t.classList.add('show'); 
-    setTimeout(() => t.classList.remove('show'), 2500); 
-};
+window.showToast = msg => { const t = $('toast'); t.querySelector('.toast-message').textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); };
 
-window.deleteTx = async id => { 
-    if (!confirm('Delete this transaction?')) return; 
-    await deleteDoc(doc(db, "transactions", id)); 
-    showToast("🗑️ Deleted"); 
-    await loadAllTransactions(); 
-    refreshAll(); 
-};
-
-window.deleteGoal = async id => { 
-    if (!confirm('Delete this goal?')) return; 
-    await deleteDoc(doc(db, "goals", id)); 
-    showToast("🗑️ Deleted"); 
-    loadGoals(); 
-};
-
-window.editGoal = async (id, name, target, saved) => { 
-    const n = prompt("Name:", name); 
-    if (!n) return; 
-    const t = prompt("Target:", target), s = prompt("Saved:", saved); 
-    if (!t || !s) return; 
-    await updateDoc(doc(db, "goals", id), { name: n, target: +t, saved: +s }); 
-    showToast("✅ Updated"); 
-    loadGoals(); 
-};
+window.deleteTx = async id => { if (!confirm('Delete this transaction?')) return; await deleteDoc(doc(db, "transactions", id)); showToast("🗑️ Deleted"); await loadAllTransactions(); refreshAll(); };
+window.deleteGoal = async id => { if (!confirm('Delete this goal?')) return; await deleteDoc(doc(db, "goals", id)); showToast("🗑️ Deleted"); loadGoals(); };
+window.editGoal = async (id, name, target, saved) => { const n = prompt("Name:", name); if (!n) return; const t = prompt("Target:", target), s = prompt("Saved:", saved); if (!t || !s) return; await updateDoc(doc(db, "goals", id), { name: n, target: +t, saved: +s }); showToast("✅ Updated"); loadGoals(); };
 
 window.exportReport = () => { 
     const txns = getMonthTxns(selectedMonth); 
-    if (!txns.length) {
-        showToast("❌ No transactions to export");
-        return;
-    }
-    const csv = [
-        ['Date', 'Description', 'Category', 'Type', 'Amount'], 
-        ...txns.map(t => [t.date, t.description, t.category, t.type, t.amount])
-    ].map(r => r.join(',')).join('\n'); 
-    
-    const a = document.createElement('a'); 
-    a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); 
-    a.download = `transactions-${selectedMonth}.csv`; 
-    a.click(); 
+    if (!txns.length) { showToast("❌ No transactions"); return; }
+    const csv = [['Date', 'Description', 'Category', 'Type', 'Amount'], ...txns.map(t => [t.date, t.description, t.category, t.type, t.amount])].map(r => r.join(',')).join('\n'); 
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = `transactions-${selectedMonth}.csv`; a.click(); 
     showToast(`📊 Exported ${txns.length} transactions`); 
 };
 
 // Form Handlers
 $('transactionForm').onsubmit = async e => { 
     e.preventDefault(); 
-    const data = { 
-        date: $('txDate').value, 
-        description: $('txDesc').value, 
-        category: $('txCategory').value, 
-        type: $('txType').value, 
-        amount: +$('txAmount').value, 
-        createdAt: new Date().toISOString() 
-    }; 
-    
+    const data = { date: $('txDate').value, description: $('txDesc').value, category: $('txCategory').value, type: $('txType').value, amount: +$('txAmount').value, createdAt: new Date().toISOString() }; 
     await addDoc(collection(db, "transactions"), data); 
-    closeModal('transaction'); 
-    $('transactionForm').reset(); 
-    $('txDate').valueAsDate = new Date(); 
+    closeModal('transaction'); $('transactionForm').reset(); $('txDate').valueAsDate = new Date(); 
     showToast("✅ Transaction added"); 
-    
     await loadAllTransactions(); 
-    
-    // If transaction is for a different month, switch to that month
     const txMonth = getMonth(data.date); 
-    if (txMonth !== selectedMonth) { 
-        selectedMonth = txMonth; 
-        $('monthPicker').value = txMonth;
-        showToast(`📅 Switched to ${formatMonthFull(txMonth)}`);
-    } 
+    if (txMonth !== selectedMonth) { selectedMonth = txMonth; $('monthPicker').value = txMonth; showToast(`📅 Switched to ${formatMonthFull(txMonth)}`); } 
     refreshAll(); 
 };
 
 $('goalForm').onsubmit = async e => { 
     e.preventDefault(); 
-    await addDoc(collection(db, "goals"), { 
-        name: $('goalName').value, 
-        target: +$('goalTarget').value, 
-        saved: +$('goalSaved').value, 
-        createdAt: new Date().toISOString() 
-    }); 
-    closeModal('goal'); 
-    $('goalForm').reset(); 
-    showToast("🎯 Goal added"); 
-    loadGoals(); 
+    await addDoc(collection(db, "goals"), { name: $('goalName').value, target: +$('goalTarget').value, saved: +$('goalSaved').value, createdAt: new Date().toISOString() }); 
+    closeModal('goal'); $('goalForm').reset(); 
+    showToast("🎯 Goal added"); loadGoals(); 
 };
 
-// Filter handlers for transactions table
-$('searchInput').oninput = filterTable; 
-$('categoryFilter').onchange = filterTable; 
-$('typeFilter').onchange = filterTable;
+// Balance Form Handler
+$('balanceForm').onsubmit = async e => {
+    e.preventDefault();
+    balanceSources.bank = +$('bankBalance').value || 0;
+    balanceSources.shares = +$('shareBalance').value || 0;
+    await saveBalanceSources();
+    closeModal('balance');
+    showToast("💰 Balance sources updated");
+    refreshAll();
+};
+
+// Filter handlers
+$('searchInput').oninput = filterTable; $('categoryFilter').onchange = filterTable; $('typeFilter').onchange = filterTable;
 
 function filterTable() { 
-    const s = $('searchInput').value.toLowerCase();
-    const c = $('categoryFilter').value;
-    const t = $('typeFilter').value;
-    
+    const s = $('searchInput').value.toLowerCase(), c = $('categoryFilter').value, t = $('typeFilter').value;
     let visibleCount = 0;
-    
     document.querySelectorAll('#transactionBody tr').forEach(r => { 
         if (r.cells.length < 5) return; 
-        const match = r.textContent.toLowerCase().includes(s) && 
-                      (c === 'all' || r.cells[2].textContent === c) && 
-                      (t === 'all' || r.cells[3].textContent.trim().toLowerCase() === t);
+        const match = r.textContent.toLowerCase().includes(s) && (c === 'all' || r.cells[2].textContent === c) && (t === 'all' || r.cells[3].textContent.trim().toLowerCase() === t);
         r.style.display = match ? '' : 'none';
         if (match) visibleCount++;
     });
-    
-    // Update count
     const totalCount = getMonthTxns(selectedMonth).length;
-    if (s || c !== 'all' || t !== 'all') {
-        $('txCount').textContent = `${visibleCount} of ${totalCount} shown`;
-    } else {
-        $('txCount').textContent = `${totalCount} transaction${totalCount !== 1 ? 's' : ''}`;
-    }
+    $('txCount').textContent = (s || c !== 'all' || t !== 'all') ? `${visibleCount} of ${totalCount} shown` : `${totalCount} transaction${totalCount !== 1 ? 's' : ''}`;
 }
 
 // Initialize
@@ -1593,6 +1656,7 @@ window.onload = async () => {
     $('monthPicker').value = selectedMonth; 
     $('txDate').valueAsDate = new Date(); 
     initCharts(); 
+    await loadBalanceSources();
     await loadAllTransactions(); 
     refreshAll(); 
     loadGoals(); 
