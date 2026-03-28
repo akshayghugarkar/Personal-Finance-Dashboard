@@ -82,7 +82,6 @@
 
         .dashboard { max-width: 1500px; margin: 0 auto; padding: 24px; }
 
-        /* Header */
         .header {
             padding: 16px 24px;
             margin-bottom: 20px;
@@ -184,7 +183,6 @@
         .btn-delete { background: rgba(250, 112, 154, 0.2); color: #fa709a; }
         .btn-delete:hover { background: var(--grad-danger); color: #fff; }
 
-        /* Modal */
         .modal {
             display: none;
             position: fixed;
@@ -204,8 +202,6 @@
             width: 100%;
             max-width: 400px;
             animation: slideUp 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
         }
 
         .modal-header { margin-bottom: 20px; }
@@ -259,12 +255,11 @@
         .form-actions { display: flex; gap: 8px; margin-top: 20px; }
         .form-actions button { flex: 1; }
 
-        /* Icon Picker */
         .icon-picker {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
             gap: 6px;
-            max-height: 120px;
+            max-height: 150px;
             overflow-y: auto;
             padding: 8px;
             background: rgba(255, 255, 255, 0.02);
@@ -290,22 +285,17 @@
         .icon-option:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
         .icon-option.selected { background: var(--grad-primary); color: #fff; }
 
-        /* Color Picker */
         .color-picker {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
-            gap: 6px;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 8px;
-            border: 1px solid var(--border);
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
 
         .color-option {
-            width: 100%;
-            aspect-ratio: 1;
+            width: 28px;
+            height: 28px;
             border: 2px solid transparent;
-            border-radius: 8px;
+            border-radius: 6px;
             cursor: pointer;
             transition: var(--transition);
         }
@@ -313,7 +303,6 @@
         .color-option:hover { transform: scale(1.1); }
         .color-option.selected { border-color: #fff; box-shadow: 0 0 10px rgba(255,255,255,0.3); }
 
-        /* ========== UNIFIED KPI CARD ========== */
         .kpi-unified {
             padding: 0;
             margin-bottom: 20px;
@@ -514,7 +503,6 @@
             color: white;
         }
 
-        .balance-source-icon.income { background: var(--grad-success); }
         .balance-source-icon.bank { background: var(--grad-primary); }
         .balance-source-icon.shares { background: var(--grad-gold); }
 
@@ -672,7 +660,6 @@
         .kpi-item.balance .kpi-mini-progress-fill { background: var(--grad-primary); }
         .kpi-item.savings .kpi-mini-progress-fill { background: var(--grad-dark); }
 
-        /* Chart Section */
         .chart-section {
             display: grid;
             grid-template-columns: 1.5fr 1fr;
@@ -736,7 +723,6 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        /* Two Column Layout */
         .two-columns {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -775,7 +761,6 @@
             gap: 4px;
         }
 
-        /* Insights */
         .insight-item {
             display: flex;
             align-items: center;
@@ -801,7 +786,6 @@
         .insight-content h4 { font: 600 12px 'Inter', sans-serif; margin-bottom: 2px; }
         .insight-content p { color: var(--text-secondary); font-size: 11px; }
 
-        /* Goals */
         .goal-item {
             padding: 14px;
             background: rgba(255, 255, 255, 0.02);
@@ -838,7 +822,6 @@
             animation: shimmer 2s infinite;
         }
 
-        /* Budget Grid - Compact */
         .budget-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -880,18 +863,9 @@
             transition: var(--transition);
         }
 
-        .budget-action-btn.edit {
-            background: rgba(79, 172, 254, 0.2);
-            color: #4facfe;
-        }
-
+        .budget-action-btn.edit { background: rgba(79, 172, 254, 0.2); color: #4facfe; }
         .budget-action-btn.edit:hover { background: var(--grad-success); color: #fff; }
-
-        .budget-action-btn.delete {
-            background: rgba(250, 112, 154, 0.2);
-            color: #fa709a;
-        }
-
+        .budget-action-btn.delete { background: rgba(250, 112, 154, 0.2); color: #fa709a; }
         .budget-action-btn.delete:hover { background: var(--grad-danger); color: #fff; }
 
         .budget-header { margin-bottom: 6px; }
@@ -933,7 +907,39 @@
 
         .budget-remaining { font-size: 8px; margin-top: 4px; }
 
-        /* Table */
+        .budget-card.add-new {
+            border: 2px dashed rgba(255, 255, 255, 0.1);
+            background: transparent;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 90px;
+            cursor: pointer;
+        }
+
+        .budget-card.add-new:hover {
+            border-color: rgba(102, 126, 234, 0.5);
+            background: rgba(102, 126, 234, 0.05);
+        }
+
+        .add-budget-content {
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .add-budget-content i {
+            font-size: 18px;
+            margin-bottom: 4px;
+            display: block;
+            opacity: 0.5;
+        }
+
+        .add-budget-content span {
+            font: 500 9px 'Inter', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
         .table-container {
             padding: 20px;
             margin-bottom: 20px;
@@ -1031,7 +1037,6 @@
         .amount-income { color: #00f2fe; font-weight: 600; }
         .amount-expense { color: #fa709a; font-weight: 600; }
 
-        /* Toast */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -1065,7 +1070,6 @@
         .no-data i { font-size: 30px; margin-bottom: 10px; display: block; opacity: 0.3; }
         .no-data p { margin-top: 6px; font-size: 11px; opacity: 0.7; }
 
-        /* Responsive */
         @media (max-width: 1200px) {
             .kpi-grid { grid-template-columns: 1fr 1fr; }
             .kpi-item { border-bottom: 1px solid var(--border); }
@@ -1107,7 +1111,6 @@
 </head>
 <body>
     <div class="dashboard">
-        <!-- Header -->
         <header class="header glass flex-between">
             <h1 class="gradient-text"><i class="fas fa-chart-line gradient-text"></i>Finance Dashboard</h1>
             
@@ -1124,10 +1127,8 @@
             </div>
         </header>
 
-        <!-- Unified KPI Card -->
         <section class="kpi-unified glass" id="kpiSection"></section>
 
-        <!-- Charts Section -->
         <section class="chart-section">
             <div class="chart-container glass">
                 <div class="chart-header flex-between">
@@ -1152,7 +1153,6 @@
             </div>
         </section>
 
-        <!-- Insights & Goals -->
         <section class="two-columns">
             <div class="section-card glass">
                 <div class="section-header flex-between">
@@ -1164,19 +1164,14 @@
             <div class="section-card glass" id="goalsContainer"></div>
         </section>
 
-        <!-- Budget Tracking -->
         <section class="section-card glass" style="margin-bottom:20px">
             <div class="section-header flex-between">
                 <h3 class="section-title"><i class="fas fa-wallet"></i>Budget</h3>
-                <div class="flex-gap">
-                    <span style="font-size:10px;color:var(--text-secondary)" id="budgetMonth"></span>
-                    <button class="btn btn-sm btn-primary" onclick="openBudgetModal()"><i class="fas fa-plus"></i>Add</button>
-                </div>
+                <span style="font-size:10px;color:var(--text-secondary)" id="budgetMonth"></span>
             </div>
             <div class="budget-grid" id="budgetGrid"></div>
         </section>
 
-        <!-- Transactions Table -->
         <section class="table-container glass">
             <div class="table-header-row">
                 <div class="table-title-area">
@@ -1213,7 +1208,6 @@
         </section>
     </div>
 
-    <!-- Transaction Modal -->
     <div id="transactionModal" class="modal">
         <div class="modal-content">
             <div class="modal-header flex-between">
@@ -1244,7 +1238,6 @@
         </div>
     </div>
 
-    <!-- Goal Modal -->
     <div id="goalModal" class="modal">
         <div class="modal-content">
             <div class="modal-header flex-between">
@@ -1263,7 +1256,6 @@
         </div>
     </div>
 
-    <!-- Balance Source Modal -->
     <div id="balanceModal" class="modal">
         <div class="modal-content">
             <div class="modal-header flex-between">
@@ -1279,9 +1271,6 @@
                     <label><i class="fas fa-chart-line"></i> Share Market</label>
                     <input type="number" id="shareBalance" placeholder="e.g., 25000">
                 </div>
-                <p style="font-size:10px;color:var(--text-secondary);margin-bottom:16px">
-                    <i class="fas fa-info-circle"></i> Income is auto-calculated from transactions.
-                </p>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('balance')">Cancel</button>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-check"></i>Save</button>
@@ -1290,7 +1279,6 @@
         </div>
     </div>
 
-    <!-- Budget Modal -->
     <div id="budgetModal" class="modal">
         <div class="modal-content">
             <div class="modal-header flex-between">
@@ -1301,11 +1289,11 @@
                 <input type="hidden" id="budgetId">
                 <div class="form-group">
                     <label>Category Name</label>
-                    <input type="text" id="budgetName" placeholder="e.g., Food, Rent, etc." required>
+                    <input type="text" id="budgetName" placeholder="e.g., Food, Transport" required>
                 </div>
                 <div class="form-group">
                     <label>Budget Amount (₹)</label>
-                    <input type="number" id="budgetAmount" placeholder="10000" min="1" required>
+                    <input type="number" id="budgetAmount" placeholder="e.g., 15000" min="100" required>
                 </div>
                 <div class="form-group">
                     <label>Icon</label>
@@ -1323,7 +1311,6 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast" class="toast glass flex-center">
         <div class="toast-icon toast-success flex-center"><i class="fas fa-check"></i></div>
         <div class="toast-message"></div>
@@ -1348,13 +1335,12 @@ const $ = id => document.getElementById(id);
 let selectedMonth = new Date().toISOString().slice(0, 7);
 let selectedChartView = 'daily';
 let allTransactions = [];
+let allBudgets = [];
 let expenseChart = null, mainChart = null;
 let balanceSources = { bank: 0, shares: 0 };
-let budgetData = [];
-let selectedIcon = 'fa-tag';
+let selectedIcon = 'fa-wallet';
 let selectedColor = 'var(--grad-primary)';
 
-// Default budgets for initialization
 const defaultBudgets = [
     { name: 'Food', icon: 'fa-utensils', color: 'var(--grad-danger)', budget: 15000 },
     { name: 'Rent', icon: 'fa-home', color: 'var(--grad-primary)', budget: 4500 },
@@ -1370,18 +1356,21 @@ const defaultBudgets = [
 const availableIcons = [
     'fa-utensils', 'fa-home', 'fa-gas-pump', 'fa-file-invoice', 'fa-film', 'fa-heart',
     'fa-dumbbell', 'fa-blender', 'fa-apple-alt', 'fa-car', 'fa-plane', 'fa-shopping-bag',
-    'fa-tshirt', 'fa-mobile', 'fa-laptop', 'fa-book', 'fa-graduation-cap', 'fa-baby',
-    'fa-dog', 'fa-coffee', 'fa-wine-glass', 'fa-pizza-slice', 'fa-gamepad', 'fa-music',
-    'fa-gift', 'fa-tools', 'fa-lightbulb', 'fa-umbrella', 'fa-piggy-bank', 'fa-briefcase',
-    'fa-wallet', 'fa-tag', 'fa-shopping-cart', 'fa-bus', 'fa-bicycle', 'fa-bed',
-    'fa-couch', 'fa-tv', 'fa-wifi', 'fa-phone'
+    'fa-gift', 'fa-book', 'fa-graduation-cap', 'fa-baby', 'fa-dog', 'fa-coffee',
+    'fa-pizza-slice', 'fa-glass-cheers', 'fa-tshirt', 'fa-mobile-alt', 'fa-laptop',
+    'fa-gamepad', 'fa-music', 'fa-palette', 'fa-tools', 'fa-wrench', 'fa-plug',
+    'fa-lightbulb', 'fa-wifi', 'fa-tv', 'fa-couch', 'fa-bed', 'fa-bath',
+    'fa-broom', 'fa-spray-can', 'fa-cut', 'fa-medkit', 'fa-pills', 'fa-syringe',
+    'fa-tooth', 'fa-glasses', 'fa-bus', 'fa-bicycle', 'fa-motorcycle', 'fa-train',
+    'fa-wallet', 'fa-piggy-bank', 'fa-coins', 'fa-credit-card', 'fa-money-bill',
+    'fa-briefcase', 'fa-building', 'fa-store', 'fa-shopping-cart', 'fa-tags',
+    'fa-percent', 'fa-receipt', 'fa-calculator', 'fa-chart-line', 'fa-university'
 ];
 
 const availableColors = [
     'var(--grad-primary)', 'var(--grad-success)', 'var(--grad-danger)', 'var(--grad-warning)',
     'var(--grad-info)', 'var(--grad-dark)', 'var(--grad-pink)', 'var(--grad-orange)',
-    'var(--grad-green)', 'var(--grad-purple)', 'var(--grad-gold)',
-    'linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%)'
+    'var(--grad-green)', 'var(--grad-purple)', 'var(--grad-gold)'
 ];
 
 const colorMap = {
@@ -1405,21 +1394,18 @@ const getMonth = d => d.slice(0, 7);
 const getYear = d => d.slice(0, 4);
 const getDays = m => new Date(m.split('-')[0], m.split('-')[1], 0).getDate();
 
-// Initialize Icon Picker
-function initIconPicker() {
-    const picker = $('iconPicker');
-    picker.innerHTML = availableIcons.map(icon => `
+function initPickers() {
+    const iconPicker = $('iconPicker');
+    const colorPicker = $('colorPicker');
+    
+    iconPicker.innerHTML = availableIcons.map(icon => `
         <button type="button" class="icon-option ${icon === selectedIcon ? 'selected' : ''}" data-icon="${icon}" onclick="selectIcon('${icon}')">
             <i class="fas ${icon}"></i>
         </button>
     `).join('');
-}
-
-// Initialize Color Picker
-function initColorPicker() {
-    const picker = $('colorPicker');
-    picker.innerHTML = availableColors.map((color, i) => `
-        <button type="button" class="color-option ${color === selectedColor ? 'selected' : ''}" data-color="${color}" onclick="selectColor('${color}')" style="background:${color}"></button>
+    
+    colorPicker.innerHTML = availableColors.map(color => `
+        <div class="color-option ${color === selectedColor ? 'selected' : ''}" data-color="${color}" style="background:${color}" onclick="selectColor('${color}')"></div>
     `).join('');
 }
 
@@ -1444,103 +1430,33 @@ async function saveBalanceSources() {
     await setDoc(doc(db, "settings", "balanceSources"), balanceSources);
 }
 
-// Budget CRUD Operations
 async function loadBudgets() {
-    try {
-        const snap = await getDocs(collection(db, "budgets"));
-        budgetData = [];
-        snap.forEach(d => budgetData.push({ id: d.id, ...d.data() }));
-        
-        // Initialize with defaults if empty
-        if (budgetData.length === 0) {
-            for (const b of defaultBudgets) {
-                const docRef = await addDoc(collection(db, "budgets"), b);
-                budgetData.push({ id: docRef.id, ...b });
-            }
-        }
-        
-        updateCategoryDropdowns();
-    } catch (e) { 
-        console.log("Error loading budgets:", e);
-        budgetData = [...defaultBudgets];
-    }
-}
-
-async function saveBudget(data) {
-    if (data.id) {
-        await updateDoc(doc(db, "budgets", data.id), {
-            name: data.name,
-            budget: data.budget,
-            icon: data.icon,
-            color: data.color
-        });
-    } else {
-        await addDoc(collection(db, "budgets"), {
-            name: data.name,
-            budget: data.budget,
-            icon: data.icon,
-            color: data.color
-        });
-    }
-    await loadBudgets();
-}
-
-async function deleteBudgetItem(id) {
-    if (!confirm('Delete this budget category?')) return;
-    await deleteDoc(doc(db, "budgets", id));
-    await loadBudgets();
-    refreshAll();
-    showToast("🗑️ Budget deleted");
-}
-
-window.openBudgetModal = (id = null) => {
-    $('budgetId').value = '';
-    $('budgetName').value = '';
-    $('budgetAmount').value = '';
-    selectedIcon = 'fa-tag';
-    selectedColor = 'var(--grad-primary)';
-    $('budgetModalTitle').textContent = 'Add Budget';
+    const snap = await getDocs(collection(db, "budgets"));
+    allBudgets = [];
+    snap.forEach(d => allBudgets.push({ id: d.id, ...d.data() }));
     
-    if (id) {
-        const budget = budgetData.find(b => b.id === id);
-        if (budget) {
-            $('budgetId').value = id;
-            $('budgetName').value = budget.name;
-            $('budgetAmount').value = budget.budget;
-            selectedIcon = budget.icon || 'fa-tag';
-            selectedColor = budget.color || 'var(--grad-primary)';
-            $('budgetModalTitle').textContent = 'Edit Budget';
+    if (allBudgets.length === 0) {
+        for (const b of defaultBudgets) {
+            const docRef = await addDoc(collection(db, "budgets"), b);
+            allBudgets.push({ id: docRef.id, ...b });
         }
     }
     
-    initIconPicker();
-    initColorPicker();
-    openModal('budget');
-};
-
-window.editBudget = id => openBudgetModal(id);
-window.deleteBudget = deleteBudgetItem;
+    updateCategoryDropdowns();
+}
 
 function updateCategoryDropdowns() {
-    const categories = budgetData.map(b => b.name);
-    categories.push('Salary', 'Freelance', 'Other');
+    const categories = allBudgets.map(b => b.name);
+    const txCategory = $('txCategory');
+    const filterCategory = $('categoryFilter');
     
-    // Update transaction category dropdown
-    const txCat = $('txCategory');
-    txCat.innerHTML = '<option value="">Select</option>' + categories.map(c => `<option>${c}</option>`).join('');
+    txCategory.innerHTML = '<option value="">Select</option>' + 
+        categories.map(c => `<option>${c}</option>`).join('') +
+        '<option>Salary</option><option>Freelance</option><option>Other</option>';
     
-    // Update filter dropdown
-    const filterCat = $('categoryFilter');
-    filterCat.innerHTML = '<option value="all">All Categories</option>' + categories.map(c => `<option>${c}</option>`).join('');
-    
-    // Update colorMap
-    budgetData.forEach(b => {
-        // Extract a solid color from gradient for chart
-        if (b.color.includes('#')) {
-            const match = b.color.match(/#[a-fA-F0-9]{6}/);
-            if (match) colorMap[b.name] = match[0];
-        }
-    });
+    filterCategory.innerHTML = '<option value="all">All Categories</option>' +
+        categories.map(c => `<option>${c}</option>`).join('') +
+        '<option>Salary</option><option>Freelance</option><option>Other</option>';
 }
 
 window.changeMonth = delta => {
@@ -1571,15 +1487,46 @@ window.openBalanceModal = () => {
     openModal('balance');
 };
 
+window.openBudgetModal = (id = null) => {
+    if (id) {
+        const budget = allBudgets.find(b => b.id === id);
+        if (budget) {
+            $('budgetModalTitle').textContent = 'Edit Budget';
+            $('budgetId').value = id;
+            $('budgetName').value = budget.name;
+            $('budgetAmount').value = budget.budget;
+            selectedIcon = budget.icon || 'fa-wallet';
+            selectedColor = budget.color || 'var(--grad-primary)';
+        }
+    } else {
+        $('budgetModalTitle').textContent = 'Add Budget';
+        $('budgetId').value = '';
+        $('budgetForm').reset();
+        selectedIcon = 'fa-wallet';
+        selectedColor = 'var(--grad-primary)';
+    }
+    initPickers();
+    openModal('budget');
+};
+
+window.deleteBudget = async id => {
+    if (!confirm('Delete this budget category?')) return;
+    await deleteDoc(doc(db, "budgets", id));
+    showToast("🗑️ Budget deleted");
+    await loadBudgets();
+    refreshAll();
+};
+
+// KPI Card - Balance only includes Bank + Shares (NOT net income)
 function renderKPIs(income, expense, prevIncome, prevExpense) {
-    const transactionBalance = income - expense;
-    const totalBalance = transactionBalance + (balanceSources.bank || 0) + (balanceSources.shares || 0);
+    // Balance only includes Bank and Shares - NOT net income
+    const totalBalance = (balanceSources.bank || 0) + (balanceSources.shares || 0);
     const savings = income - expense;
     const rate = income > 0 ? Math.round((savings / income) * 100) : 0;
     const iTrend = prevIncome > 0 ? Math.round(((income - prevIncome) / prevIncome) * 100) : 0;
     const eTrend = prevExpense > 0 ? Math.round(((expense - prevExpense) / prevExpense) * 100) : 0;
 
-    const totalBudget = budgetData.reduce((a, b) => a + (b.budget || 0), 0);
+    const totalBudget = allBudgets.reduce((a, b) => a + (b.budget || 0), 0);
     const expensePercent = totalBudget > 0 ? Math.min((expense / totalBudget) * 100, 100) : 0;
     const incomeTarget = totalBudget * 1.2;
     const incomePercent = incomeTarget > 0 ? Math.min((income / incomeTarget) * 100, 100) : 0;
@@ -1599,6 +1546,7 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
             </div>
         </div>
         <div class="kpi-grid">
+            <!-- Balance Column - Only Bank + Shares -->
             <div class="kpi-item balance">
                 <div class="kpi-item-top">
                     <div class="kpi-item-label">
@@ -1612,13 +1560,6 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                 <div class="kpi-item-value">${formatCurrency(totalBalance)}</div>
                 
                 <div class="balance-sources">
-                    <div class="balance-source" onclick="openBalanceModal()">
-                        <div class="balance-source-left">
-                            <div class="balance-source-icon income"><i class="fas fa-coins"></i></div>
-                            <span class="balance-source-name">Net Income</span>
-                        </div>
-                        <span class="balance-source-value ${transactionBalance >= 0 ? 'positive' : 'negative'}">${formatShort(transactionBalance)}</span>
-                    </div>
                     <div class="balance-source" onclick="openBalanceModal()">
                         <div class="balance-source-left">
                             <div class="balance-source-icon bank"><i class="fas fa-university"></i></div>
@@ -1636,8 +1577,10 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                 </div>
             </div>
 
+            <!-- Income & Expense Side by Side -->
             <div class="kpi-item income-expense-wrapper">
                 <div class="income-expense-container">
+                    <!-- Income (Left Column) -->
                     <div class="ie-column income">
                         <div class="ie-column-header">
                             <div class="ie-column-label">
@@ -1657,6 +1600,7 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                         </div>
                     </div>
 
+                    <!-- Expense (Right Column) -->
                     <div class="ie-column expense">
                         <div class="ie-column-header">
                             <div class="ie-column-label">
@@ -1678,6 +1622,7 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                 </div>
             </div>
 
+            <!-- Savings Column -->
             <div class="kpi-item savings">
                 <div class="kpi-item-top">
                     <div class="kpi-item-label">
@@ -1718,12 +1663,7 @@ function renderInsights({ income, expense, spentByCategory }) {
 function renderBudgets(spent) {
     $('budgetMonth').textContent = formatMonthFull(selectedMonth);
     
-    if (budgetData.length === 0) {
-        $('budgetGrid').innerHTML = `<div class="no-data" style="grid-column:span 3"><i class="fas fa-wallet"></i>No budgets<p>Click "Add" to create budget categories</p></div>`;
-        return;
-    }
-    
-    $('budgetGrid').innerHTML = budgetData.map(b => {
+    const budgetCards = allBudgets.map(b => {
         const s = spent[b.name] || 0;
         const pct = b.budget > 0 ? Math.round((s / b.budget) * 100) : 0;
         const status = pct > 100 ? 'over' : pct > 80 ? 'warning' : 'good';
@@ -1731,12 +1671,16 @@ function renderBudgets(spent) {
         return `
             <div class="budget-card">
                 <div class="budget-card-actions">
-                    <button class="budget-action-btn edit" onclick="editBudget('${b.id}')" title="Edit"><i class="fas fa-pen"></i></button>
-                    <button class="budget-action-btn delete" onclick="deleteBudget('${b.id}')" title="Delete"><i class="fas fa-trash"></i></button>
+                    <button class="budget-action-btn edit" onclick="openBudgetModal('${b.id}')" title="Edit">
+                        <i class="fas fa-pen"></i>
+                    </button>
+                    <button class="budget-action-btn delete" onclick="deleteBudget('${b.id}')" title="Delete">
+                        <i class="fas fa-trash"></i>
+                    </button>
                 </div>
                 <div class="budget-header flex-between">
                     <div class="budget-category">
-                        <div class="category-icon flex-center" style="background:${b.color || 'var(--grad-primary)'}"><i class="fas ${b.icon || 'fa-tag'}" style="color:#fff"></i></div>
+                        <div class="category-icon flex-center" style="background:${b.color || 'var(--grad-primary)'}"><i class="fas ${b.icon || 'fa-wallet'}" style="color:#fff"></i></div>
                         ${b.name}
                     </div>
                     <span class="budget-status status-${status}">${pct}%</span>
@@ -1750,6 +1694,17 @@ function renderBudgets(spent) {
             </div>
         `;
     }).join('');
+    
+    const addCard = `
+        <div class="budget-card add-new" onclick="openBudgetModal()">
+            <div class="add-budget-content">
+                <i class="fas fa-plus"></i>
+                <span>Add Budget</span>
+            </div>
+        </div>
+    `;
+    
+    $('budgetGrid').innerHTML = budgetCards + addCard;
 }
 
 async function loadAllTransactions() {
@@ -1956,17 +1911,25 @@ $('balanceForm').onsubmit = async e => {
 
 $('budgetForm').onsubmit = async e => {
     e.preventDefault();
+    const id = $('budgetId').value;
     const data = {
-        id: $('budgetId').value || null,
         name: $('budgetName').value,
         budget: +$('budgetAmount').value,
         icon: selectedIcon,
         color: selectedColor
     };
-    await saveBudget(data);
+    
+    if (id) {
+        await updateDoc(doc(db, "budgets", id), data);
+        showToast("✅ Budget updated");
+    } else {
+        await addDoc(collection(db, "budgets"), data);
+        showToast("✅ Budget added");
+    }
+    
     closeModal('budget');
     $('budgetForm').reset();
-    showToast(data.id ? "✅ Budget updated" : "✅ Budget added");
+    await loadBudgets();
     refreshAll();
 };
 
