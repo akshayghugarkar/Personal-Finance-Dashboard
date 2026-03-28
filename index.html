@@ -58,9 +58,10 @@
         @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.05); } }
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(50px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.7; } }
+        @keyframes scaleIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
         .glass {
             background: var(--bg-card);
@@ -91,7 +92,7 @@
         }
 
         .header h1 {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 800;
             letter-spacing: -0.5px;
             display: flex;
@@ -99,13 +100,13 @@
             gap: 12px;
         }
 
-        .header h1 i { font-size: 32px; }
+        .header h1 i { font-size: 28px; }
 
         /* Month Selector */
         .month-selector {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: rgba(255, 255, 255, 0.05);
             padding: 6px 12px;
             border-radius: 12px;
@@ -117,7 +118,7 @@
             border: none;
             color: var(--text-secondary);
             cursor: pointer;
-            padding: 8px;
+            padding: 6px 8px;
             border-radius: 8px;
             transition: var(--transition);
             font-size: 14px;
@@ -156,17 +157,15 @@
 
         /* Buttons */
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
             border-radius: 12px;
             cursor: pointer;
-            font: 600 14px 'Inter', sans-serif;
+            font: 600 13px 'Inter', sans-serif;
             transition: var(--transition);
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            position: relative;
-            overflow: hidden;
         }
 
         .btn:hover { transform: translateY(-2px); }
@@ -288,80 +287,229 @@
         .form-actions { display: flex; gap: 12px; margin-top: 28px; }
         .form-actions button { flex: 1; }
 
-        /* KPI Cards */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+        /* ========== NEW KPI SECTION ========== */
+        .kpi-section {
             margin-bottom: 32px;
+            animation: fadeInUp 0.5s ease;
         }
 
-        .kpi-card {
-            padding: 24px;
-            transition: var(--transition);
+        .kpi-container {
+            display: grid;
+            grid-template-columns: 1.2fr repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        /* Main Balance Card */
+        .kpi-main {
+            padding: 28px;
             position: relative;
             overflow: hidden;
-            animation: fadeInUp 0.5s ease both;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.2);
         }
 
-        .kpi-card:nth-child(1) { animation-delay: 0.05s; }
-        .kpi-card:nth-child(2) { animation-delay: 0.1s; }
-        .kpi-card:nth-child(3) { animation-delay: 0.15s; }
-        .kpi-card:nth-child(4) { animation-delay: 0.2s; }
-
-        .kpi-card::before {
+        .kpi-main::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--grad-primary);
-            opacity: 0;
-            transition: opacity 0.3s;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.1) 0%, transparent 70%);
+            pointer-events: none;
         }
 
-        .kpi-card:hover::before { opacity: 1; }
-        .kpi-card:hover { background: var(--bg-card-hover); transform: translateY(-4px); }
+        .kpi-main-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
 
-        .kpi-header { margin-bottom: 16px; }
+        .kpi-main-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            background: var(--grad-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+        }
 
-        .kpi-title {
+        .kpi-main-label {
+            font: 500 13px 'Inter', sans-serif;
             color: var(--text-secondary);
-            font: 500 11px 'Inter', sans-serif;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
 
-        .kpi-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
-            font-size: 20px;
+        .kpi-main-value {
+            font: 800 42px 'Inter', sans-serif;
+            letter-spacing: -2px;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.8) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
-        .icon-balance { background: var(--grad-primary); box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3); }
-        .icon-income { background: var(--grad-success); box-shadow: 0 6px 20px rgba(79, 172, 254, 0.3); }
-        .icon-expense { background: var(--grad-danger); box-shadow: 0 6px 20px rgba(250, 112, 154, 0.3); }
-        .icon-savings { background: var(--grad-dark); box-shadow: 0 6px 20px rgba(48, 207, 208, 0.3); }
-
-        .kpi-value {
-            font: 700 32px 'Inter', sans-serif;
-            margin-bottom: 8px;
-            color: var(--text-primary);
-            letter-spacing: -1px;
+        .kpi-main-footer {
+            display: flex;
+            gap: 20px;
         }
 
-        .kpi-subtitle {
-            color: var(--text-secondary);
+        .kpi-main-stat {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
             font: 500 12px 'Inter', sans-serif;
+        }
+
+        .kpi-main-stat i {
+            font-size: 14px;
+        }
+
+        .kpi-main-stat.positive { color: #00f2fe; }
+        .kpi-main-stat.negative { color: #fa709a; }
+
+        /* Mini KPI Cards */
+        .kpi-mini {
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .kpi-mini::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            border-radius: 0 4px 4px 0;
+            transition: var(--transition);
+        }
+
+        .kpi-mini.income::before { background: var(--grad-success); }
+        .kpi-mini.expense::before { background: var(--grad-danger); }
+        .kpi-mini.savings::before { background: var(--grad-dark); }
+
+        .kpi-mini:hover {
+            background: var(--bg-card-hover);
+            transform: translateY(-4px);
+        }
+
+        .kpi-mini:hover::before {
+            width: 6px;
+        }
+
+        .kpi-mini-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .kpi-mini-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .kpi-mini-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: white;
+        }
+
+        .kpi-mini.income .kpi-mini-icon { background: var(--grad-success); }
+        .kpi-mini.expense .kpi-mini-icon { background: var(--grad-danger); }
+        .kpi-mini.savings .kpi-mini-icon { background: var(--grad-dark); }
+
+        .kpi-mini-label {
+            font: 500 11px 'Inter', sans-serif;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .kpi-mini-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font: 600 11px 'Inter', sans-serif;
+        }
+
+        .kpi-mini-trend.up {
+            background: rgba(0, 242, 254, 0.1);
+            color: #00f2fe;
+        }
+
+        .kpi-mini-trend.down {
+            background: rgba(250, 112, 154, 0.1);
+            color: #fa709a;
+        }
+
+        .kpi-mini-value {
+            font: 700 26px 'Inter', sans-serif;
+            letter-spacing: -1px;
+            color: var(--text-primary);
+        }
+
+        .kpi-mini-sub {
+            font: 400 12px 'Inter', sans-serif;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: 6px;
         }
 
-        .trend-up { color: #00f2fe; }
-        .trend-down { color: #fa709a; }
+        .kpi-mini-sub span {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        /* Sparkline Bar */
+        .kpi-sparkline {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 24px;
+            margin-top: auto;
+        }
+
+        .kpi-sparkline-bar {
+            flex: 1;
+            border-radius: 2px;
+            min-height: 4px;
+            transition: var(--transition);
+        }
+
+        .kpi-mini.income .kpi-sparkline-bar { background: rgba(0, 242, 254, 0.4); }
+        .kpi-mini.expense .kpi-sparkline-bar { background: rgba(250, 112, 154, 0.4); }
+        .kpi-mini.savings .kpi-sparkline-bar { background: rgba(48, 207, 208, 0.4); }
+
+        .kpi-mini:hover .kpi-sparkline-bar {
+            opacity: 0.8;
+        }
 
         /* Chart Section */
         .chart-section {
@@ -728,7 +876,8 @@
 
         /* Responsive */
         @media (max-width: 1200px) {
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .kpi-container { grid-template-columns: 1fr 1fr; }
+            .kpi-main { grid-column: span 2; }
             .chart-section { grid-template-columns: 1fr; }
             .two-columns { grid-template-columns: 1fr; }
             .budget-grid { grid-template-columns: repeat(2, 1fr); }
@@ -737,9 +886,12 @@
         @media (max-width: 768px) {
             .dashboard { padding: 16px; }
             .header { padding: 16px; flex-direction: column; gap: 16px; }
-            .header h1 { font-size: 22px; }
-            .kpi-grid { grid-template-columns: 1fr; }
-            .kpi-value { font-size: 28px; }
+            .header h1 { font-size: 20px; }
+            .kpi-container { grid-template-columns: 1fr; }
+            .kpi-main { grid-column: span 1; }
+            .kpi-main-value { font-size: 32px; }
+            .kpi-main-footer { flex-direction: column; gap: 10px; }
+            .kpi-mini-value { font-size: 22px; }
             .budget-grid { grid-template-columns: 1fr; }
             .modal-content { padding: 24px; }
             .chart-stats { grid-template-columns: 1fr; }
@@ -762,9 +914,7 @@
                 <button onclick="changeMonth(-1)"><i class="fas fa-chevron-left"></i></button>
                 <input type="month" id="monthPicker" onchange="onMonthChange()">
                 <button onclick="changeMonth(1)"><i class="fas fa-chevron-right"></i></button>
-                <button onclick="goToCurrentMonth()" class="btn btn-sm btn-secondary">
-                    <i class="fas fa-calendar-day"></i>
-                </button>
+                <button onclick="goToCurrentMonth()" class="btn btn-sm btn-secondary"><i class="fas fa-calendar-day"></i></button>
             </div>
             
             <div class="flex-gap">
@@ -773,13 +923,8 @@
             </div>
         </header>
 
-        <!-- Month Badge -->
-        <div style="text-align:center;margin-bottom:28px;">
-            <span class="month-badge"><i class="fas fa-calendar-alt"></i><span id="currentMonthDisplay">January 2025</span></span>
-        </div>
-
-        <!-- KPI Cards -->
-        <section class="kpi-grid" id="kpiGrid"></section>
+        <!-- KPI Section -->
+        <section class="kpi-section" id="kpiSection"></section>
 
         <!-- Charts Section -->
         <section class="chart-section">
@@ -957,8 +1102,7 @@ const $ = id => document.getElementById(id);
 let selectedMonth = new Date().toISOString().slice(0, 7);
 let selectedChartView = 'daily';
 let allTransactions = [];
-let expenseChart = null;
-let mainChart = null;
+let expenseChart = null, mainChart = null;
 
 // Data
 const budgetData = [
@@ -1006,37 +1150,122 @@ window.goToCurrentMonth = () => {
     showToast("📅 Current month");
 };
 
-window.selectMonth = m => { selectedMonth = m; $('monthPicker').value = m; refreshAll(); };
 window.switchChartView = v => {
     selectedChartView = v;
     document.querySelectorAll('#chartTimeFilter button').forEach(b => b.classList.toggle('active', b.dataset.period === v));
     updateMainChart();
 };
 
-// Render KPIs
-function renderKPIs(income, expense, prevIncome, prevExpense) {
+// Generate Sparkline Data
+function generateSparkline(data, days = 7) {
+    const result = [];
+    for (let i = 0; i < days; i++) {
+        result.push(data[i] || Math.random() * 50 + 10);
+    }
+    const max = Math.max(...result);
+    return result.map(v => (v / max) * 100);
+}
+
+// Render KPIs - NEW DESIGN
+function renderKPIs(income, expense, prevIncome, prevExpense, dailyData) {
     const savings = income - expense;
     const rate = income > 0 ? Math.round((savings / income) * 100) : 0;
     const iTrend = prevIncome > 0 ? Math.round(((income - prevIncome) / prevIncome) * 100) : 0;
     const eTrend = prevExpense > 0 ? Math.round(((expense - prevExpense) / prevExpense) * 100) : 0;
+    const sTrend = (prevIncome - prevExpense) !== 0 ? Math.round(((savings - (prevIncome - prevExpense)) / Math.abs(prevIncome - prevExpense)) * 100) : 0;
 
-    const kpis = [
-        { title: 'Total Balance', icon: 'fa-wallet', cls: 'icon-balance', value: formatCurrency(savings), sub: savings >= 0 ? '💰 Healthy' : '⚠️ Negative' },
-        { title: 'Income', icon: 'fa-arrow-down', cls: 'icon-income', value: formatCurrency(income), trend: iTrend >= 0, pct: Math.abs(iTrend) },
-        { title: 'Expenses', icon: 'fa-arrow-up', cls: 'icon-expense', value: formatCurrency(expense), trend: eTrend <= 0, pct: Math.abs(eTrend) },
-        { title: 'Savings', icon: 'fa-piggy-bank', cls: 'icon-savings', value: formatCurrency(savings), sub: `Rate: <strong>${rate}%</strong>` }
-    ];
+    // Generate sparkline data from daily transactions
+    const days = getDays(selectedMonth);
+    const incomeSparkline = Array.from({length: 7}, (_, i) => dailyData[days - 6 + i]?.income || 0);
+    const expenseSparkline = Array.from({length: 7}, (_, i) => dailyData[days - 6 + i]?.expense || 0);
+    const savingsSparkline = incomeSparkline.map((v, i) => Math.max(0, v - (expenseSparkline[i] || 0)));
 
-    $('kpiGrid').innerHTML = kpis.map(k => `
-        <div class="kpi-card glass">
-            <div class="kpi-header flex-between">
-                <span class="kpi-title">${k.title}</span>
-                <div class="kpi-icon ${k.cls} flex-center"><i class="fas ${k.icon}"></i></div>
+    const normalizeSparkline = arr => {
+        const max = Math.max(...arr, 1);
+        return arr.map(v => (v / max) * 100);
+    };
+
+    $('kpiSection').innerHTML = `
+        <div class="kpi-container">
+            <!-- Main Balance Card -->
+            <div class="kpi-main glass">
+                <div class="kpi-main-header">
+                    <div class="kpi-main-icon"><i class="fas fa-wallet"></i></div>
+                    <span class="kpi-main-label">Total Balance</span>
+                </div>
+                <div class="kpi-main-value">${formatCurrency(savings)}</div>
+                <div class="kpi-main-footer">
+                    <div class="kpi-main-stat ${savings >= 0 ? 'positive' : 'negative'}">
+                        <i class="fas fa-${savings >= 0 ? 'arrow-up' : 'arrow-down'}"></i>
+                        ${savings >= 0 ? 'Healthy' : 'Negative'}
+                    </div>
+                    <div class="kpi-main-stat positive">
+                        <i class="fas fa-percent"></i>
+                        ${rate}% Savings Rate
+                    </div>
+                    <div class="kpi-main-stat">
+                        <i class="fas fa-calendar"></i>
+                        ${formatMonthYear(selectedMonth)}
+                    </div>
+                </div>
             </div>
-            <div class="kpi-value">${k.value}</div>
-            <div class="kpi-subtitle">${k.sub || `<span class="trend-${k.trend ? 'up' : 'down'}"><i class="fas fa-arrow-${k.trend ? 'up' : 'down'}"></i> ${k.pct}%</span> vs last month`}</div>
+
+            <!-- Income Card -->
+            <div class="kpi-mini glass income">
+                <div class="kpi-mini-header">
+                    <div class="kpi-mini-info">
+                        <div class="kpi-mini-icon"><i class="fas fa-arrow-down"></i></div>
+                        <span class="kpi-mini-label">Income</span>
+                    </div>
+                    <div class="kpi-mini-trend ${iTrend >= 0 ? 'up' : 'down'}">
+                        <i class="fas fa-arrow-${iTrend >= 0 ? 'up' : 'down'}"></i>
+                        ${Math.abs(iTrend)}%
+                    </div>
+                </div>
+                <div class="kpi-mini-value">${formatCurrency(income)}</div>
+                <div class="kpi-sparkline">
+                    ${normalizeSparkline(incomeSparkline).map(h => `<div class="kpi-sparkline-bar" style="height:${Math.max(h, 8)}%"></div>`).join('')}
+                </div>
+            </div>
+
+            <!-- Expense Card -->
+            <div class="kpi-mini glass expense">
+                <div class="kpi-mini-header">
+                    <div class="kpi-mini-info">
+                        <div class="kpi-mini-icon"><i class="fas fa-arrow-up"></i></div>
+                        <span class="kpi-mini-label">Expenses</span>
+                    </div>
+                    <div class="kpi-mini-trend ${eTrend <= 0 ? 'up' : 'down'}">
+                        <i class="fas fa-arrow-${eTrend <= 0 ? 'down' : 'up'}"></i>
+                        ${Math.abs(eTrend)}%
+                    </div>
+                </div>
+                <div class="kpi-mini-value">${formatCurrency(expense)}</div>
+                <div class="kpi-sparkline">
+                    ${normalizeSparkline(expenseSparkline).map(h => `<div class="kpi-sparkline-bar" style="height:${Math.max(h, 8)}%"></div>`).join('')}
+                </div>
+            </div>
+
+            <!-- Savings Card -->
+            <div class="kpi-mini glass savings">
+                <div class="kpi-mini-header">
+                    <div class="kpi-mini-info">
+                        <div class="kpi-mini-icon"><i class="fas fa-piggy-bank"></i></div>
+                        <span class="kpi-mini-label">Savings</span>
+                    </div>
+                    <div class="kpi-mini-trend ${sTrend >= 0 ? 'up' : 'down'}">
+                        <i class="fas fa-arrow-${sTrend >= 0 ? 'up' : 'down'}"></i>
+                        ${Math.abs(sTrend)}%
+                    </div>
+                </div>
+                <div class="kpi-mini-value">${formatCurrency(savings)}</div>
+                <div class="kpi-mini-sub">
+                    <i class="fas fa-chart-pie"></i>
+                    Rate: <span>${rate}%</span>
+                </div>
+            </div>
         </div>
-    `).join('');
+    `;
 }
 
 // Render Insights
@@ -1272,12 +1501,11 @@ async function loadGoals() {
 
 // Refresh All
 async function refreshAll() {
-    $('currentMonthDisplay').textContent = formatMonthYear(selectedMonth);
     const curr = getMonthTxns(selectedMonth), data = calcData(curr);
     const [y, m] = selectedMonth.split('-').map(Number);
     const prev = getMonthTxns(new Date(y, m - 2, 1).toISOString().slice(0, 7)), prevData = calcData(prev);
     
-    renderKPIs(data.income, data.expense, prevData.income, prevData.expense);
+    renderKPIs(data.income, data.expense, prevData.income, prevData.expense, data.dailyData);
     renderBudgets(data.spentByCategory);
     renderTransactions(curr);
     renderInsights(data);
