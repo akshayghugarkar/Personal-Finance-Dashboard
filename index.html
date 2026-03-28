@@ -257,7 +257,7 @@
         .form-actions { display: flex; gap: 8px; margin-top: 20px; }
         .form-actions button { flex: 1; }
 
-        /* ========== UNIFIED KPI CARD - COMPACT ========== */
+        /* ========== UNIFIED KPI CARD ========== */
         .kpi-unified {
             padding: 0;
             margin-bottom: 20px;
@@ -316,10 +316,10 @@
 
         .kpi-month-badge i { font-size: 10px; }
 
-        /* KPI Grid - 4 Columns: Balance | Income | Expense | Savings */
+        /* KPI Grid - 3 Columns: Balance | Income+Expense | Savings */
         .kpi-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-columns: 1fr 2fr 1fr;
             padding: 0;
         }
 
@@ -344,8 +344,6 @@
         }
 
         .kpi-item.balance::before { background: var(--grad-primary); }
-        .kpi-item.income::before { background: var(--grad-success); }
-        .kpi-item.expense::before { background: var(--grad-danger); }
         .kpi-item.savings::before { background: var(--grad-dark); }
 
         .kpi-item:hover { background: rgba(255, 255, 255, 0.02); }
@@ -376,8 +374,6 @@
         }
 
         .kpi-item.balance .kpi-item-icon { background: var(--grad-primary); }
-        .kpi-item.income .kpi-item-icon { background: var(--grad-success); }
-        .kpi-item.expense .kpi-item-icon { background: var(--grad-danger); }
         .kpi-item.savings .kpi-item-icon { background: var(--grad-dark); }
 
         .kpi-item-name {
@@ -412,9 +408,6 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .kpi-item.income .kpi-item-value { color: #00f2fe; }
-        .kpi-item.expense .kpi-item-value { color: #fa709a; }
-
         .kpi-item-sub {
             font: 400 10px 'Inter', sans-serif;
             color: var(--text-secondary);
@@ -427,7 +420,7 @@
         .kpi-item-sub.positive { color: #00f2fe; }
         .kpi-item-sub.negative { color: #fa709a; }
 
-        /* Balance Sources - Compact */
+        /* Balance Sources */
         .balance-sources {
             display: flex;
             flex-direction: column;
@@ -486,7 +479,130 @@
         .balance-source-value.positive { color: #00f2fe; }
         .balance-source-value.negative { color: #fa709a; }
 
-        /* Progress bar for KPI items */
+        /* ========== INCOME & EXPENSE SIDE BY SIDE ========== */
+        .kpi-item.income-expense-wrapper {
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .income-expense-container {
+            display: flex;
+            flex-direction: row;
+            flex: 1;
+        }
+
+        .ie-column {
+            flex: 1;
+            padding: 16px 20px;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .ie-column:first-child {
+            border-right: 1px solid var(--border);
+        }
+
+        .ie-column::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .ie-column.income::before { background: var(--grad-success); }
+        .ie-column.expense::before { background: var(--grad-danger); }
+
+        .ie-column:hover { background: rgba(255, 255, 255, 0.02); }
+        .ie-column:hover::before { opacity: 1; }
+
+        .ie-column-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .ie-column-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ie-column-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+        }
+
+        .ie-column.income .ie-column-icon { background: var(--grad-success); }
+        .ie-column.expense .ie-column-icon { background: var(--grad-danger); }
+
+        .ie-column-name {
+            font: 600 10px 'Inter', sans-serif;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .ie-column-trend {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font: 600 9px 'Inter', sans-serif;
+        }
+
+        .ie-column-trend.up { background: rgba(0, 242, 254, 0.1); color: #00f2fe; }
+        .ie-column-trend.down { background: rgba(250, 112, 154, 0.1); color: #fa709a; }
+
+        .ie-column-value {
+            font: 700 26px 'Inter', sans-serif;
+            letter-spacing: -1px;
+            margin-bottom: 6px;
+        }
+
+        .ie-column.income .ie-column-value { color: #00f2fe; }
+        .ie-column.expense .ie-column-value { color: #fa709a; }
+
+        .ie-column-sub {
+            font: 400 10px 'Inter', sans-serif;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .ie-column-sub strong { color: var(--text-primary); font-weight: 600; }
+
+        .ie-progress {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 2px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .ie-progress-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 1s ease;
+        }
+
+        .ie-column.income .ie-progress-fill { background: var(--grad-success); }
+        .ie-column.expense .ie-progress-fill { background: var(--grad-danger); }
+
+        /* Savings Progress */
         .kpi-mini-progress {
             height: 4px;
             background: rgba(255, 255, 255, 0.05);
@@ -502,8 +618,6 @@
         }
 
         .kpi-item.balance .kpi-mini-progress-fill { background: var(--grad-primary); }
-        .kpi-item.income .kpi-mini-progress-fill { background: var(--grad-success); }
-        .kpi-item.expense .kpi-mini-progress-fill { background: var(--grad-danger); }
         .kpi-item.savings .kpi-mini-progress-fill { background: var(--grad-dark); }
 
         /* Chart Section */
@@ -876,7 +990,8 @@
             .kpi-grid { grid-template-columns: 1fr 1fr; }
             .kpi-item { border-bottom: 1px solid var(--border); }
             .kpi-item:nth-child(2) { border-right: none; }
-            .kpi-item:nth-child(3), .kpi-item:nth-child(4) { border-bottom: none; }
+            .kpi-item:last-child { border-bottom: none; }
+            .kpi-item.income-expense-wrapper { grid-column: span 2; border-right: none; }
             .chart-section { grid-template-columns: 1fr; }
             .two-columns { grid-template-columns: 1fr; }
             .budget-grid { grid-template-columns: repeat(2, 1fr); }
@@ -889,11 +1004,21 @@
             .kpi-grid { grid-template-columns: 1fr; }
             .kpi-item { border-right: none; border-bottom: 1px solid var(--border); }
             .kpi-item:last-child { border-bottom: none; }
+            .kpi-item.income-expense-wrapper { grid-column: span 1; }
+            /* Keep income/expense side by side even on mobile */
+            .income-expense-container { flex-direction: row; }
+            .ie-column-value { font-size: 20px; }
             .budget-grid { grid-template-columns: 1fr; }
             .modal-content { padding: 18px; }
             .chart-stats { grid-template-columns: 1fr; }
             th, td { padding: 8px 6px; font-size: 10px; }
             .table-header-row { flex-direction: column; align-items: flex-start; }
+        }
+
+        @media (max-width: 480px) {
+            .income-expense-container { flex-direction: row; }
+            .ie-column { padding: 12px 10px; }
+            .ie-column-value { font-size: 18px; }
         }
 
         ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -1207,7 +1332,7 @@ window.openBalanceModal = () => {
     openModal('balance');
 };
 
-// KPI Card with 4 Columns: Balance | Income | Expense | Savings
+// KPI Card with Income & Expense Side by Side
 function renderKPIs(income, expense, prevIncome, prevExpense) {
     const transactionBalance = income - expense;
     const totalBalance = transactionBalance + (balanceSources.bank || 0) + (balanceSources.shares || 0);
@@ -1274,43 +1399,48 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                 </div>
             </div>
 
-            <!-- Income Column (Left) -->
-            <div class="kpi-item income">
-                <div class="kpi-item-top">
-                    <div class="kpi-item-label">
-                        <div class="kpi-item-icon"><i class="fas fa-arrow-down"></i></div>
-                        <span class="kpi-item-name">Income</span>
+            <!-- Income & Expense Side by Side -->
+            <div class="kpi-item income-expense-wrapper">
+                <div class="income-expense-container">
+                    <!-- Income (Left Column) -->
+                    <div class="ie-column income">
+                        <div class="ie-column-header">
+                            <div class="ie-column-label">
+                                <div class="ie-column-icon"><i class="fas fa-arrow-down"></i></div>
+                                <span class="ie-column-name">Income</span>
+                            </div>
+                            <div class="ie-column-trend ${iTrend >= 0 ? 'up' : 'down'}">
+                                <i class="fas fa-arrow-${iTrend >= 0 ? 'up' : 'down'}"></i>${Math.abs(iTrend)}%
+                            </div>
+                        </div>
+                        <div class="ie-column-value">${formatCurrency(income)}</div>
+                        <div class="ie-column-sub">
+                            <i class="fas fa-chart-line"></i> vs last month
+                        </div>
+                        <div class="ie-progress">
+                            <div class="ie-progress-fill" style="width:${incomePercent}%"></div>
+                        </div>
                     </div>
-                    <div class="kpi-item-trend ${iTrend >= 0 ? 'up' : 'down'}">
-                        <i class="fas fa-arrow-${iTrend >= 0 ? 'up' : 'down'}"></i>${Math.abs(iTrend)}%
-                    </div>
-                </div>
-                <div class="kpi-item-value">${formatCurrency(income)}</div>
-                <div class="kpi-item-sub">
-                    <i class="fas fa-chart-line"></i> vs last month
-                </div>
-                <div class="kpi-mini-progress">
-                    <div class="kpi-mini-progress-fill" style="width:${incomePercent}%"></div>
-                </div>
-            </div>
 
-            <!-- Expense Column (Right) -->
-            <div class="kpi-item expense">
-                <div class="kpi-item-top">
-                    <div class="kpi-item-label">
-                        <div class="kpi-item-icon"><i class="fas fa-arrow-up"></i></div>
-                        <span class="kpi-item-name">Expense</span>
+                    <!-- Expense (Right Column) -->
+                    <div class="ie-column expense">
+                        <div class="ie-column-header">
+                            <div class="ie-column-label">
+                                <div class="ie-column-icon"><i class="fas fa-arrow-up"></i></div>
+                                <span class="ie-column-name">Expense</span>
+                            </div>
+                            <div class="ie-column-trend ${eTrend <= 0 ? 'up' : 'down'}">
+                                <i class="fas fa-arrow-${eTrend <= 0 ? 'down' : 'up'}"></i>${Math.abs(eTrend)}%
+                            </div>
+                        </div>
+                        <div class="ie-column-value">${formatCurrency(expense)}</div>
+                        <div class="ie-column-sub">
+                            of <strong>${formatShort(totalBudget)}</strong> budget
+                        </div>
+                        <div class="ie-progress">
+                            <div class="ie-progress-fill" style="width:${expensePercent}%"></div>
+                        </div>
                     </div>
-                    <div class="kpi-item-trend ${eTrend <= 0 ? 'up' : 'down'}">
-                        <i class="fas fa-arrow-${eTrend <= 0 ? 'down' : 'up'}"></i>${Math.abs(eTrend)}%
-                    </div>
-                </div>
-                <div class="kpi-item-value">${formatCurrency(expense)}</div>
-                <div class="kpi-item-sub">
-                    of <strong>${formatShort(totalBudget)}</strong> budget
-                </div>
-                <div class="kpi-mini-progress">
-                    <div class="kpi-mini-progress-fill" style="width:${expensePercent}%"></div>
                 </div>
             </div>
 
