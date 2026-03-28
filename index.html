@@ -255,6 +255,19 @@
         .form-actions { display: flex; gap: 8px; margin-top: 20px; }
         .form-actions button { flex: 1; }
 
+        .form-info {
+            font-size: 10px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .form-info i { font-size: 10px; }
+        .form-info.positive { color: #00f2fe; }
+        .form-info.negative { color: #fa709a; }
+
         .icon-picker {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -504,6 +517,8 @@
         }
 
         .balance-source-icon.bank { background: var(--grad-primary); }
+        .balance-source-icon.initial { background: var(--grad-info); }
+        .balance-source-icon.savings { background: var(--grad-success); }
         .balance-source-icon.shares { background: var(--grad-gold); }
 
         .balance-source-name {
@@ -1264,12 +1279,22 @@
             </div>
             <form id="balanceForm">
                 <div class="form-group">
-                    <label><i class="fas fa-university"></i> Bank Account</label>
-                    <input type="number" id="bankBalance" placeholder="e.g., 50000" min="0">
+                    <label><i class="fas fa-university"></i> Initial Bank Balance</label>
+                    <input type="number" id="bankBalance" placeholder="e.g., 50000">
+                    <div class="form-info">
+                        <i class="fas fa-info-circle"></i> Starting balance before tracking
+                    </div>
                 </div>
                 <div class="form-group">
                     <label><i class="fas fa-chart-line"></i> Share Market</label>
                     <input type="number" id="shareBalance" placeholder="e.g., 25000">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-piggy-bank"></i> Cumulative Savings</label>
+                    <input type="text" id="cumulativeSavingsDisplay" readonly style="opacity:0.7">
+                    <div class="form-info" id="savingsInfo">
+                        <i class="fas fa-calculator"></i> Auto-calculated from all transactions
+                    </div>
                 </div>
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal('balance')">Cancel</button>
@@ -1337,7 +1362,7 @@ let selectedChartView = 'daily';
 let allTransactions = [];
 let allBudgets = [];
 let expenseChart = null, mainChart = null;
-let balanceSources = { bank: 0, shares: 0 };
+let balanceSources = { initialBank: 0, shares: 0 };
 let selectedIcon = 'fa-wallet';
 let selectedColor = 'var(--grad-primary)';
 
@@ -1394,6 +1419,16 @@ const getMonth = d => d.slice(0, 7);
 const getYear = d => d.slice(0, 4);
 const getDays = m => new Date(m.split('-')[0], m.split('-')[1], 0).getDate();
 
+// Calculate cumulative savings from ALL transactions
+function calcCumulativeSavings() {
+    let totalIncome = 0, totalExpense = 0;
+    allTransactions.forEach(t => {
+        if (t.type === 'income') totalIncome += t.amount;
+        else totalExpense += t.amount;
+    });
+    return totalIncome - totalExpense;
+}
+
 function initPickers() {
     const iconPicker = $('iconPicker');
     const colorPicker = $('colorPicker');
@@ -1422,7 +1457,14 @@ window.selectColor = color => {
 async function loadBalanceSources() {
     try {
         const docSnap = await getDoc(doc(db, "settings", "balanceSources"));
-        if (docSnap.exists()) balanceSources = docSnap.data();
+        if (docSnap.exists()) {
+            const data = docSnap.data();
+            // Handle migration from old structure
+            balanceSources = {
+                initialBank: data.initialBank || data.bank || 0,
+                shares: data.shares || 0
+            };
+        }
     } catch (e) { console.log("No balance sources"); }
 }
 
@@ -1482,8 +1524,21 @@ window.switchChartView = v => {
 };
 
 window.openBalanceModal = () => {
-    $('bankBalance').value = balanceSources.bank || '';
+    $('bankBalance').value = balanceSources.initialBank || '';
     $('shareBalance').value = balanceSources.shares || '';
+    
+    const cumulativeSavings = calcCumulativeSavings();
+    $('cumulativeSavingsDisplay').value = formatCurrency(cumulativeSavings);
+    
+    const savingsInfo = $('savingsInfo');
+    if (cumulativeSavings >= 0) {
+        savingsInfo.className = 'form-info positive';
+        savingsInfo.innerHTML = '<i class="fas fa-arrow-up"></i> Total savings from all transactions';
+    } else {
+        savingsInfo.className = 'form-info negative';
+        savingsInfo.innerHTML = '<i class="fas fa-arrow-down"></i> Total deficit from all transactions';
+    }
+    
     openModal('balance');
 };
 
@@ -1517,12 +1572,14 @@ window.deleteBudget = async id => {
     refreshAll();
 };
 
-// KPI Card - Balance only includes Bank + Shares (NOT net income)
+// KPI Card - Bank Balance = Initial Bank + Cumulative Savings
 function renderKPIs(income, expense, prevIncome, prevExpense) {
-    // Balance only includes Bank and Shares - NOT net income
-    const totalBalance = (balanceSources.bank || 0) + (balanceSources.shares || 0);
-    const savings = income - expense;
-    const rate = income > 0 ? Math.round((savings / income) * 100) : 0;
+    const cumulativeSavings = calcCumulativeSavings();
+    const bankBalance = (balanceSources.initialBank || 0) + cumulativeSavings;
+    const totalBalance = bankBalance + (balanceSources.shares || 0);
+    
+    const monthSavings = income - expense;
+    const rate = income > 0 ? Math.round((monthSavings / income) * 100) : 0;
     const iTrend = prevIncome > 0 ? Math.round(((income - prevIncome) / prevIncome) * 100) : 0;
     const eTrend = prevExpense > 0 ? Math.round(((expense - prevExpense) / prevExpense) * 100) : 0;
 
@@ -1546,7 +1603,7 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
             </div>
         </div>
         <div class="kpi-grid">
-            <!-- Balance Column - Only Bank + Shares -->
+            <!-- Balance Column -->
             <div class="kpi-item balance">
                 <div class="kpi-item-top">
                     <div class="kpi-item-label">
@@ -1565,7 +1622,21 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                             <div class="balance-source-icon bank"><i class="fas fa-university"></i></div>
                             <span class="balance-source-name">Bank</span>
                         </div>
-                        <span class="balance-source-value">${formatShort(balanceSources.bank || 0)}</span>
+                        <span class="balance-source-value ${bankBalance >= 0 ? 'positive' : 'negative'}">${formatShort(bankBalance)}</span>
+                    </div>
+                    <div class="balance-source" onclick="openBalanceModal()" style="padding-left:24px;opacity:0.7">
+                        <div class="balance-source-left">
+                            <div class="balance-source-icon initial"><i class="fas fa-flag"></i></div>
+                            <span class="balance-source-name">Initial</span>
+                        </div>
+                        <span class="balance-source-value">${formatShort(balanceSources.initialBank || 0)}</span>
+                    </div>
+                    <div class="balance-source" onclick="openBalanceModal()" style="padding-left:24px;opacity:0.7">
+                        <div class="balance-source-left">
+                            <div class="balance-source-icon savings"><i class="fas fa-piggy-bank"></i></div>
+                            <span class="balance-source-name">Savings</span>
+                        </div>
+                        <span class="balance-source-value ${cumulativeSavings >= 0 ? 'positive' : 'negative'}">${cumulativeSavings >= 0 ? '+' : ''}${formatShort(cumulativeSavings)}</span>
                     </div>
                     <div class="balance-source" onclick="openBalanceModal()">
                         <div class="balance-source-left">
@@ -1580,7 +1651,6 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
             <!-- Income & Expense Side by Side -->
             <div class="kpi-item income-expense-wrapper">
                 <div class="income-expense-container">
-                    <!-- Income (Left Column) -->
                     <div class="ie-column income">
                         <div class="ie-column-header">
                             <div class="ie-column-label">
@@ -1600,7 +1670,6 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                         </div>
                     </div>
 
-                    <!-- Expense (Right Column) -->
                     <div class="ie-column expense">
                         <div class="ie-column-header">
                             <div class="ie-column-label">
@@ -1622,22 +1691,22 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
                 </div>
             </div>
 
-            <!-- Savings Column -->
+            <!-- Savings Column (This Month) -->
             <div class="kpi-item savings">
                 <div class="kpi-item-top">
                     <div class="kpi-item-label">
                         <div class="kpi-item-icon"><i class="fas fa-piggy-bank"></i></div>
-                        <span class="kpi-item-name">Savings</span>
+                        <span class="kpi-item-name">This Month</span>
                     </div>
-                    <div class="kpi-item-trend up"><i class="fas fa-percent"></i>${rate}%</div>
+                    <div class="kpi-item-trend ${rate >= 0 ? 'up' : 'down'}"><i class="fas fa-percent"></i>${Math.abs(rate)}%</div>
                 </div>
-                <div class="kpi-item-value">${formatCurrency(savings)}</div>
-                <div class="kpi-item-sub ${savings >= 0 ? 'positive' : 'negative'}">
-                    <i class="fas fa-${savings >= 0 ? 'check-circle' : 'exclamation-circle'}"></i>
-                    ${savings >= 0 ? 'On track' : 'Over budget'}
+                <div class="kpi-item-value">${monthSavings >= 0 ? '+' : ''}${formatCurrency(monthSavings)}</div>
+                <div class="kpi-item-sub ${monthSavings >= 0 ? 'positive' : 'negative'}">
+                    <i class="fas fa-${monthSavings >= 0 ? 'check-circle' : 'exclamation-circle'}"></i>
+                    ${monthSavings >= 0 ? 'Saved this month' : 'Deficit this month'}
                 </div>
                 <div class="kpi-mini-progress">
-                    <div class="kpi-mini-progress-fill" style="width:${Math.min(rate * 2, 100)}%"></div>
+                    <div class="kpi-mini-progress-fill" style="width:${Math.min(Math.abs(rate) * 2, 100)}%"></div>
                 </div>
             </div>
         </div>
@@ -1647,10 +1716,11 @@ function renderKPIs(income, expense, prevIncome, prevExpense) {
 function renderInsights({ income, expense, spentByCategory }) {
     const savings = income - expense;
     const top = Object.entries(spentByCategory).sort((a, b) => b[1] - a[1])[0];
+    const cumulativeSavings = calcCumulativeSavings();
     const items = [
         { icon: 'fa-trophy', bg: 'var(--grad-warning)', color: '#8b4513', title: top ? `Top: ${top[0]}` : 'No Data', text: top ? `${formatCurrency(top[1])} spent` : 'Add expenses' },
-        { icon: savings >= 0 ? 'fa-smile' : 'fa-frown', bg: savings >= 0 ? 'var(--grad-success)' : 'var(--grad-danger)', color: '#fff', title: savings >= 0 ? 'Great!' : 'Alert', text: savings >= 0 ? `Saved ${formatCurrency(savings)}` : `Over ${formatCurrency(-savings)}` },
-        { icon: 'fa-lightbulb', bg: 'var(--grad-primary)', color: '#fff', title: 'Tip', text: `${income > 0 ? Math.round((savings/income)*100) : 0}% savings rate` }
+        { icon: savings >= 0 ? 'fa-smile' : 'fa-frown', bg: savings >= 0 ? 'var(--grad-success)' : 'var(--grad-danger)', color: '#fff', title: savings >= 0 ? 'Great!' : 'Alert', text: savings >= 0 ? `Saved ${formatCurrency(savings)} this month` : `Over ${formatCurrency(-savings)} this month` },
+        { icon: 'fa-piggy-bank', bg: 'var(--grad-primary)', color: '#fff', title: 'All Time', text: `Total savings: ${formatCurrency(cumulativeSavings)}` }
     ];
     $('insightsContainer').innerHTML = items.map(i => `
         <div class="insight-item">
@@ -1901,7 +1971,7 @@ $('goalForm').onsubmit = async e => {
 
 $('balanceForm').onsubmit = async e => {
     e.preventDefault();
-    balanceSources.bank = +$('bankBalance').value || 0;
+    balanceSources.initialBank = +$('bankBalance').value || 0;
     balanceSources.shares = +$('shareBalance').value || 0;
     await saveBalanceSources();
     closeModal('balance');
