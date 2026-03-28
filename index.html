@@ -684,32 +684,6 @@
             background: rgba(255, 255, 255, 0.05);
         }
 
-        .chart-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border);
-        }
-
-        .chart-stat {
-            text-align: center;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 8px;
-        }
-
-        .chart-stat .label {
-            font: 500 9px 'Inter', sans-serif;
-            color: var(--text-secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 3px;
-        }
-
-        .chart-stat .value { font: 700 14px 'Inter', sans-serif; }
-
         /* Two Column Layout */
         .two-columns {
             display: grid;
@@ -812,46 +786,60 @@
             animation: shimmer 2s infinite;
         }
 
-        /* Budget Grid */
+        /* Budget Grid - Compact */
         .budget-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
+            gap: 8px;
         }
 
         .budget-card {
-            padding: 14px;
+            padding: 10px;
             background: rgba(255, 255, 255, 0.02);
-            border-radius: 12px;
+            border-radius: 10px;
             transition: var(--transition);
         }
 
         .budget-card:hover { background: rgba(255, 255, 255, 0.04); transform: translateY(-2px); }
 
-        .budget-header { margin-bottom: 10px; }
-        .budget-category { display: flex; align-items: center; gap: 6px; font: 600 11px 'Inter', sans-serif; }
+        .budget-header { margin-bottom: 6px; }
+        .budget-category { display: flex; align-items: center; gap: 5px; font: 600 10px 'Inter', sans-serif; }
 
         .category-icon {
-            width: 28px;
-            height: 28px;
-            border-radius: 6px;
-            font-size: 12px;
+            width: 22px;
+            height: 22px;
+            border-radius: 5px;
+            font-size: 10px;
         }
 
         .budget-status {
-            font: 600 9px 'Inter', sans-serif;
-            padding: 2px 6px;
-            border-radius: 10px;
+            font: 600 8px 'Inter', sans-serif;
+            padding: 2px 5px;
+            border-radius: 8px;
         }
 
         .status-good { background: rgba(0, 242, 254, 0.15); color: #00f2fe; }
         .status-warning { background: rgba(252, 182, 159, 0.2); color: #fcb69f; }
         .status-over { background: rgba(250, 112, 154, 0.2); color: #fa709a; }
 
-        .budget-amounts { margin-bottom: 6px; font: 500 11px 'Inter', sans-serif; }
+        .budget-amounts { margin-bottom: 4px; font: 500 10px 'Inter', sans-serif; }
         .budget-spent { font-weight: 700; }
         .budget-total { color: var(--text-secondary); }
-        .budget-remaining { font-size: 9px; margin-top: 5px; }
+        
+        .budget-progress {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .budget-progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .budget-remaining { font-size: 8px; margin-top: 4px; }
 
         /* Table */
         .table-container {
@@ -994,7 +982,7 @@
             .kpi-item.income-expense-wrapper { grid-column: span 2; border-right: none; }
             .chart-section { grid-template-columns: 1fr; }
             .two-columns { grid-template-columns: 1fr; }
-            .budget-grid { grid-template-columns: repeat(2, 1fr); }
+            .budget-grid { grid-template-columns: repeat(3, 1fr); }
         }
 
         @media (max-width: 768px) {
@@ -1005,12 +993,10 @@
             .kpi-item { border-right: none; border-bottom: 1px solid var(--border); }
             .kpi-item:last-child { border-bottom: none; }
             .kpi-item.income-expense-wrapper { grid-column: span 1; }
-            /* Keep income/expense side by side even on mobile */
             .income-expense-container { flex-direction: row; }
             .ie-column-value { font-size: 20px; }
-            .budget-grid { grid-template-columns: 1fr; }
+            .budget-grid { grid-template-columns: repeat(2, 1fr); }
             .modal-content { padding: 18px; }
-            .chart-stats { grid-template-columns: 1fr; }
             th, td { padding: 8px 6px; font-size: 10px; }
             .table-header-row { flex-direction: column; align-items: flex-start; }
         }
@@ -1019,6 +1005,7 @@
             .income-expense-container { flex-direction: row; }
             .ie-column { padding: 12px 10px; }
             .ie-column-value { font-size: 18px; }
+            .budget-grid { grid-template-columns: 1fr 1fr; }
         }
 
         ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -1063,20 +1050,6 @@
                     </div>
                 </div>
                 <canvas id="mainChart"></canvas>
-                <div class="chart-stats">
-                    <div class="chart-stat">
-                        <div class="label">Income</div>
-                        <div class="value" id="chartTotalIncome" style="color:#00f2fe">₹0</div>
-                    </div>
-                    <div class="chart-stat">
-                        <div class="label">Expenses</div>
-                        <div class="value" id="chartTotalExpense" style="color:#fa709a">₹0</div>
-                    </div>
-                    <div class="chart-stat">
-                        <div class="label">Net</div>
-                        <div class="value" id="chartNetSavings">₹0</div>
-                    </div>
-                </div>
             </div>
             
             <div class="chart-container glass">
@@ -1499,10 +1472,10 @@ function renderBudgets(spent) {
                     <span class="budget-status status-${status}">${pct}%</span>
                 </div>
                 <div class="budget-amounts flex-between">
-                    <span class="budget-spent">${formatCurrency(s)}</span>
-                    <span class="budget-total">/ ${formatCurrency(b.budget)}</span>
+                    <span class="budget-spent">${formatShort(s)}</span>
+                    <span class="budget-total">/ ${formatShort(b.budget)}</span>
                 </div>
-                <div class="progress-bar"><div class="progress-fill" style="width:${Math.min(pct,100)}%;background:${status==='over'?'var(--grad-danger)':status==='warning'?'var(--grad-warning)':'var(--grad-success)'}"></div></div>
+                <div class="budget-progress"><div class="budget-progress-fill" style="width:${Math.min(pct,100)}%;background:${status==='over'?'var(--grad-danger)':status==='warning'?'var(--grad-warning)':'var(--grad-success)'}"></div></div>
                 <div class="budget-remaining" style="color:${rem>=0?'#00f2fe':'#fa709a'}">${rem>=0?`₹${rem.toLocaleString('en-IN')} left`:`₹${(-rem).toLocaleString('en-IN')} over`}</div>
             </div>
         `;
@@ -1560,7 +1533,7 @@ function renderTransactions(txns) {
 }
 
 function updateMainChart() {
-    let labels = [], incData = [], expData = [], totalIn = 0, totalEx = 0, subtitle = '';
+    let labels = [], incData = [], expData = [], subtitle = '';
     
     if (selectedChartView === 'daily') {
         const txns = getMonthTxns(selectedMonth), days = getDays(selectedMonth), daily = {};
@@ -1568,7 +1541,6 @@ function updateMainChart() {
             const d = +t.date.split('-')[2];
             if (!daily[d]) daily[d] = { income: 0, expense: 0 };
             daily[d][t.type] += t.amount;
-            t.type === 'income' ? totalIn += t.amount : totalEx += t.amount;
         });
         labels = Array.from({ length: days }, (_, i) => i + 1);
         incData = labels.map(d => daily[d]?.income || 0);
@@ -1580,7 +1552,6 @@ function updateMainChart() {
             const m = +t.date.split('-')[1];
             if (!monthly[m]) monthly[m] = { income: 0, expense: 0 };
             monthly[m][t.type] += t.amount;
-            t.type === 'income' ? totalIn += t.amount : totalEx += t.amount;
         });
         labels = monthNames;
         incData = Array.from({ length: 12 }, (_, i) => monthly[i + 1]?.income || 0);
@@ -1592,7 +1563,6 @@ function updateMainChart() {
             const y = getYear(t.date);
             if (!yearly[y]) yearly[y] = { income: 0, expense: 0 };
             yearly[y][t.type] += t.amount;
-            t.type === 'income' ? totalIn += t.amount : totalEx += t.amount;
         });
         const years = Object.keys(yearly).sort();
         labels = years; incData = years.map(y => yearly[y]?.income || 0); expData = years.map(y => yearly[y]?.expense || 0);
@@ -1602,11 +1572,6 @@ function updateMainChart() {
     if (mainChart) { mainChart.data.labels = labels; mainChart.data.datasets[0].data = incData; mainChart.data.datasets[1].data = expData; mainChart.update(); }
     
     $('chartSubtitle').textContent = subtitle;
-    $('chartTotalIncome').textContent = formatCurrency(totalIn);
-    $('chartTotalExpense').textContent = formatCurrency(totalEx);
-    const net = totalIn - totalEx;
-    $('chartNetSavings').textContent = `${net >= 0 ? '+' : ''}${formatCurrency(net)}`;
-    $('chartNetSavings').style.color = net >= 0 ? '#00f2fe' : '#fa709a';
 }
 
 function updateExpenseChart(spent) {
